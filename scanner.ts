@@ -1,5 +1,5 @@
-import { Token } from "./token.js";
-import type { TokenType } from "./token.js";
+import { Token } from "./token";
+import type { TokenType } from "./token";
 
 function return_iter(value: any) {
   return { done: false, value };
@@ -16,11 +16,15 @@ export class Scanner {
   private source: string;
   private current: number;
   private start: number;
+  private reserved: Map<string, TokenType>;
 
   constructor(input: string) {
     this.source = input.replace(/\s/g, "");
     this.current = 0;
     this.start = 0;
+
+    this.reserved = new Map();
+    this.reserved.set("repeat", Token.REPEAT);
   }
 
   next() {
@@ -58,6 +62,14 @@ export class Scanner {
     return /[0-9]/.test(char);
   }
 
+  is_reserved(char: string) {
+    return this.reserved.has(char);
+  }
+
+  current_slice() {
+    return this.source.slice(this.start, this.current);
+  }
+
   peek() {
     return this.source.charAt(this.current);
   }
@@ -67,19 +79,21 @@ export class Scanner {
       this.advance();
     }
 
-    return create_token("KEYWORD", this.source.slice(this.start, this.current));
+    const slice = this.current_slice();
+
+    if (this.is_reserved(slice)) {
+      return create_token(this.reserved.get(slice)!, slice);
+    }
+
+    return create_token(Token.KEYWORD, this.current_slice());
   }
 
   number() {
-    for (;;) {
-      if (!this.is_numeric(this.peek())) {
-        break;
-      }
-
+    while (this.is_numeric(this.peek())) {
       this.advance();
     }
 
-    return create_token("INTEGER", this.source.slice(this.start, this.current));
+    return create_token(Token.INTEGER, this.current_slice());
   }
 
   isAtEnd() {
