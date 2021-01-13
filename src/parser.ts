@@ -8,7 +8,9 @@ export class Parser {
     this.scanner = scanner;
   }
 
-  repeat() {}
+  repeat() {
+    console.log;
+  }
 
   /* peek() {
     return this.current;
