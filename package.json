@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/jlkiri/spark/issues"
   },
-  "homepage": "https://github.com/jlkiri/spark#readme"
+  "homepage": "https://github.com/jlkiri/spark#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.20"
+  }
 }

@@ -4,6 +4,7 @@ import { Token, TokenType } from "./token.js";
 import * as Expr from "./expr.js";
 import type { Motion } from "./expr.js";
 import { Compiler } from "./compiler.js";
+import fs from "fs";
 
 export class Parser {
   private scanner: Scanner;
@@ -42,6 +43,14 @@ export class Parser {
   motion() {
     if (this.match(Token.FORWARD)) {
       return new Expr.Forward(this.literal());
+    }
+
+    if (this.match(Token.LEFT)) {
+      return new Expr.Left(this.literal());
+    }
+
+    if (this.match(Token.RIGHT)) {
+      return new Expr.Right(this.literal());
     }
 
     throw new Error(`Expected motion keyword.`);
@@ -106,8 +115,10 @@ export class Parser {
   }
 }
 
-const scanner = new Scanner("repeat 4 (forward 90)");
+const scanner = new Scanner("repeat 4 (forward 90 left 45)");
 const parser = new Parser(scanner);
 const compiler = new Compiler();
 
-console.log(compiler.compile_iter(parser));
+fs.writeFileSync("output.js", compiler.compile_iter(parser), {
+  encoding: "utf8",
+});

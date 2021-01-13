@@ -50,6 +50,8 @@ export class Compiler implements ExprVisitor<string> {
       this.code.push(this.evaluate(expr!));
     }
 
-    return this.code.join("\n");
+    return `
+      function draw(ctx) { ${this.code.join("\n")} }
+    `;
   }
 }
