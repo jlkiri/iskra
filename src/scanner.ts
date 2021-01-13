@@ -1,7 +1,12 @@
-import { Token } from "./token";
-import type { TokenType } from "./token";
+import { Token } from "./token.js";
+import type { TokenType } from "./token.js";
 
-function return_iter(value: any) {
+export type SparkToken = {
+  type: TokenType;
+  value: any;
+};
+
+function return_iter(value: SparkToken) {
   return { done: false, value };
 }
 
@@ -24,14 +29,18 @@ export class Scanner {
     this.start = 0;
 
     this.reserved = new Map();
+
     this.reserved.set("repeat", Token.REPEAT);
+    this.reserved.set("forward", Token.FORWARD);
+    this.reserved.set("right", Token.RIGHT);
+    this.reserved.set("left", Token.LEFT);
   }
 
   next() {
     this.start = this.current;
 
     if (this.isAtEnd()) {
-      return { done: true, value: null };
+      return { done: true, value: create_token(Token.EOF) };
     }
 
     const char = this.advance();
@@ -51,7 +60,7 @@ export class Scanner {
         return return_iter(create_token(Token.RB));
     }
 
-    return return_iter(char);
+    return return_iter(create_token(Token.ERROR, `Unexpected token: ${char}.`));
   }
 
   is_alpha(char: string) {
@@ -85,7 +94,10 @@ export class Scanner {
       return create_token(this.reserved.get(slice)!, slice);
     }
 
-    return create_token(Token.KEYWORD, this.current_slice());
+    return create_token(
+      Token.ERROR,
+      `Unexpected token: ${this.current_slice()}`
+    );
   }
 
   number() {
@@ -93,7 +105,7 @@ export class Scanner {
       this.advance();
     }
 
-    return create_token(Token.INTEGER, this.current_slice());
+    return create_token(Token.LITERAL, this.current_slice());
   }
 
   isAtEnd() {
