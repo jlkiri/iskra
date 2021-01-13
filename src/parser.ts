@@ -3,6 +3,7 @@ import type { SparkToken } from "./scanner.js";
 import { Token, TokenType } from "./token.js";
 import * as Expr from "./expr.js";
 import type { Motion } from "./expr.js";
+import { Compiler } from "./compiler.js";
 
 export class Parser {
   private scanner: Scanner;
@@ -17,20 +18,18 @@ export class Parser {
 
   repeat() {
     const times = this.literal();
-    const movements: Array<Motion> = [];
+    const movements: Array<Motion | Expr.Repeat> = [];
 
     this.consume(Token.OB, `Expected a '(' ${JSON.stringify(this.current)}`);
 
     while (!this.check(Token.CB)) {
-      movements.push(this.motion());
+      movements.push(this.command());
     }
 
     this.consume(Token.CB, `Expected a ')' `);
 
     return new Expr.Repeat(times, movements);
   }
-
-  // error(msg: string) {}
 
   literal() {
     if (this.check(Token.LITERAL)) {
@@ -91,11 +90,24 @@ export class Parser {
   }
 
   parse() {
-    console.log(this.command());
+    return this.command();
+  }
+
+  next() {
+    if (!this.isAtEnd()) {
+      return { done: false, value: this.parse() };
+    }
+
+    return { done: true };
+  }
+
+  [Symbol.iterator]() {
+    return this;
   }
 }
 
 const scanner = new Scanner("repeat 4 (forward 90)");
 const parser = new Parser(scanner);
+const compiler = new Compiler();
 
-parser.parse();
+console.log(compiler.compile_iter(parser));

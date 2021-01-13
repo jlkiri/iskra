@@ -1,7 +1,7 @@
 import { ExprVisitor } from "./compiler.js";
 import { SparkToken } from "./scanner.js";
 
-export type Motion = Forward;
+export type Motion = Forward | Right | Left;
 
 export interface Visitable<T> {
   accept(visitor: ExprVisitor<T>): T;
@@ -44,7 +44,7 @@ export class Left implements Visitable<string> {
 }
 
 export class Literal implements Visitable<string> {
-  value: number;
+  value: string;
 
   constructor(token: SparkToken) {
     this.value = token.value;
@@ -56,10 +56,10 @@ export class Literal implements Visitable<string> {
 }
 
 export class Repeat implements Visitable<string> {
-  movements: Array<Motion>;
+  movements: Array<Motion | Repeat>;
   times: Literal;
 
-  constructor(times: Literal, movements: Array<Motion>) {
+  constructor(times: Literal, movements: Array<Motion | Repeat>) {
     this.times = times;
     this.movements = movements;
   }
