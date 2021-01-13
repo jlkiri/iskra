@@ -1,7 +1,6 @@
 # logo
 
 command := repeat '(' motion ')' | motion
-repeat := 'repeat' INT
-motion := rotate | move
-rotate := ('right' | 'left') INT
-move := 'forward' INT
+repeat := 'repeat' literal
+motion := 'right' | 'left' | 'forward' literal
+literal := INT

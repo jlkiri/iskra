@@ -55,9 +55,9 @@ export class Scanner {
 
     switch (char) {
       case "(":
-        return return_iter(create_token(Token.LB));
+        return return_iter(create_token(Token.OB));
       case ")":
-        return return_iter(create_token(Token.RB));
+        return return_iter(create_token(Token.CB));
     }
 
     return return_iter(create_token(Token.ERROR, `Unexpected token: ${char}.`));

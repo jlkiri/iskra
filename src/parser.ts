@@ -2,12 +2,7 @@ import { Scanner } from "./scanner.js";
 import type { SparkToken } from "./scanner.js";
 import { Token, TokenType } from "./token.js";
 import * as Expr from "./expr.js";
-
-/* const Motion = {
-  FORWARD: "FORWARD",
-  RIGHT: "RIGHT",
-  LEFT: "LEFT",
-} as const; */
+import type { Motion } from "./expr.js";
 
 export class Parser {
   private scanner: Scanner;
@@ -21,10 +16,21 @@ export class Parser {
   }
 
   repeat() {
-    // TODO
+    const times = this.literal();
+    const movements: Array<Motion> = [];
+
+    this.consume(Token.OB, `Expected a '(' ${JSON.stringify(this.current)}`);
+
+    while (!this.check(Token.CB)) {
+      movements.push(this.motion());
+    }
+
+    this.consume(Token.CB, `Expected a ')' `);
+
+    return new Expr.Repeat(times, movements);
   }
 
-  error(msg: string) {}
+  // error(msg: string) {}
 
   literal() {
     if (this.check(Token.LITERAL)) {
@@ -38,10 +44,12 @@ export class Parser {
     if (this.match(Token.FORWARD)) {
       return new Expr.Forward(this.literal());
     }
+
+    throw new Error(`Expected motion keyword.`);
   }
 
   isAtEnd() {
-    return this.check(Token.EOF);
+    return this.peek().type == Token.EOF;
   }
 
   advance() {
@@ -54,7 +62,14 @@ export class Parser {
     return this.current;
   }
 
+  consume(type: TokenType, msg: string) {
+    if (this.check(type)) return this.advance();
+
+    throw new Error(msg);
+  }
+
   check(type: TokenType) {
+    if (this.isAtEnd()) return false;
     return this.peek().type == Token[type];
   }
 
@@ -80,7 +95,7 @@ export class Parser {
   }
 }
 
-const scanner = new Scanner("forward 90");
+const scanner = new Scanner("repeat 4 (forward 90)");
 const parser = new Parser(scanner);
 
 parser.parse();

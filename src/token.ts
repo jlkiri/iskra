@@ -4,8 +4,8 @@ export const Token = {
   LEFT: "LEFT",
   LITERAL: "LITERAL",
   REPEAT: "REPEAT",
-  RB: "RB",
-  LB: "LB",
+  OB: "OB",
+  CB: "CB",
   ERROR: "ERROR",
   EOF: "EOF",
 } as const;
