@@ -1,6 +1,6 @@
 {
-  "name": "logo",
-  "description": "command := repeat '(' motion ')' | motion repeat := 'repeat' INT motion := rotate | move rotate := ('right' | 'left') INT move := 'forward' INT",
+  "name": "iskra",
+  "description": "Iskra language",
   "version": "1.0.0",
   "main": "dist/index.js",
   "type": "module",
