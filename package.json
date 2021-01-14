@@ -2,7 +2,7 @@
   "name": "logo",
   "description": "command := repeat '(' motion ')' | motion repeat := 'repeat' INT motion := rotate | move rotate := ('right' | 'left') INT move := 'forward' INT",
   "version": "1.0.0",
-  "main": "dist/parser.js",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/jlkiri/spark#readme",
   "devDependencies": {
-    "@types/node": "^14.14.20"
+    "@types/node": "^14.14.20",
+    "@types/prettier": "^2.1.6",
+    "prettier": "^2.2.1"
   }
 }
