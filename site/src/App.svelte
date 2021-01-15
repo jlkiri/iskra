@@ -34,13 +34,22 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    ctx.moveTo(500, 500);
+    ctx.translate(500, 500);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 5;
 
     for (let i = 0; i < 4; i++) {
-      ctx.lineTo(550, 500);
-      ctx.stroke();
+      ctx.lineTo(100, 0);
+      ctx.translate(100, 0);
       ctx.rotate((90 * Math.PI) / 180);
     }
+
+    ctx.closePath();
+    ctx.stroke();
+    // ctx.closePath()
   });
 
   /* worker.addEventListener("message", (event) => {
