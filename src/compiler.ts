@@ -31,15 +31,15 @@ export class Compiler implements ExprVisitor<string> {
   }
 
   visitForwardExpr(expr: Expr.Forward) {
-    return `ctx.lineTo(${this.evaluate(expr.distance)}, 0);`;
+    return `ctx.lineTo(${this.evaluate(expr.distance)});`;
   }
 
   visitRightExpr(expr: Expr.Right) {
-    return `ctx.rotate(${this.evaluate(expr.distance)});`;
+    return `ctx.rotate(${this.evaluate(expr.distance)} * Math.PI / 180);`;
   }
 
   visitLeftExpr(expr: Expr.Left) {
-    return `ctx.rotate(${this.evaluate(expr.distance)});`;
+    return `ctx.rotate(-${this.evaluate(expr.distance)} * Math.PI / 180);`;
   }
 
   evaluate(expr: Expr.Visitable<string>): any {
@@ -51,15 +51,8 @@ export class Compiler implements ExprVisitor<string> {
       this.code.push(this.evaluate(expr!));
     }
 
-    /* return prettier.format(
-      `
-      function draw(ctx) { ${this.code.join("\n")}\n }
-    `,
-      { semi: true, parser: "babel" }
-    ) */
-
     return `
-      function draw(ctx) { 
+      export default function draw(ctx) { 
         ${this.code.join("\n")}\n
       }
   `;

@@ -4,3 +4,7 @@ function draw(ctx) {
     ctx.moveTo(45, 0);
   }
 }
+
+export default function draw(ctx) {
+  ctx.lineTo(90, 0);
+}
