@@ -1,39 +1,27 @@
 <script lang="ts">
-  export let name: string;
+  import { onMount } from "svelte";
+
+  let canvas: HTMLCanvasElement;
+  let ctx: CanvasRenderingContext2D;
 
   const worker = new Worker("./worker.js");
+
+  onMount(() => {
+    ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  });
 
   worker.addEventListener("message", (event) => {
     console.log(event.data);
   });
+
+  worker.postMessage("forward 90");
 </script>
 
-<main>
-  <h1>Hello {name}!</h1>
-  <p>
-    Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
-    how to build Svelte apps.
-  </p>
-</main>
+<canvas bind:this={canvas} />
 
 <style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
 </style>
