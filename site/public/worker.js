@@ -153,10 +153,15 @@ class Compiler {
     `;
     }
     visitForwardExpr(expr) {
-        return `ctx.lineTo(${this.evaluate(expr.distance)});`;
+        return `
+      ctx.lineTo(${this.evaluate(expr.distance)}, 0);
+      ctx.translate(${this.evaluate(expr.distance)}, 0);
+    `;
     }
     visitRightExpr(expr) {
-        return `ctx.rotate(${this.evaluate(expr.distance)} * Math.PI / 180);`;
+        return `
+      ctx.rotate(${this.evaluate(expr.distance)} * Math.PI / 180);
+    `;
     }
     visitLeftExpr(expr) {
         return `ctx.rotate(-${this.evaluate(expr.distance)} * Math.PI / 180);`;
