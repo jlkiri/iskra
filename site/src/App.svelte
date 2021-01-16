@@ -1,11 +1,54 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
+  import { tweened } from "svelte/motion";
+  import { sineOut } from "svelte/easing";
   import { evaluateJS, debounce } from "./utils.js";
   import Console from "./Console.svelte";
 
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
   let command = "";
+
+  const speed = 200;
+
+  function clearCanvas() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function drawLine(to: number) {
+    const duration = (to / speed) * 1000;
+
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 2;
+
+    return new Promise<void>((resolve) => {
+      let start;
+
+      function update(timestamp) {
+        clearCanvas();
+
+        if (!start) {
+          start = timestamp;
+        }
+
+        const elapsed = timestamp - start;
+
+        if (elapsed >= duration) {
+          resolve();
+          return;
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(sineOut(elapsed / duration) * 500, 0);
+        ctx.stroke();
+        requestAnimationFrame(update);
+      }
+
+      requestAnimationFrame(update);
+    });
+  }
 
   const handleWindowResize = debounce(resetCanvas, 500);
 
@@ -20,9 +63,11 @@
     resetCanvas();
 
     window.addEventListener("resize", handleWindowResize);
+
+    drawLine(500);
   });
 
-  onDestroy(() => {
+  $: onDestroy(() => {
     window.removeEventListener("resize", handleWindowResize);
   });
 
@@ -53,7 +98,7 @@
     ctx.stroke();
   }
 
-  $: worker.postMessage(command);
+  // $: worker.postMessage(command);
 
   worker.addEventListener("message", async (event) => {
     const drawCompiled = await evaluateJS(event.data);
