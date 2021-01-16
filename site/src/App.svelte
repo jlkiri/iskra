@@ -1,13 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import Console from "./Console.svelte";
 
   let canvas: HTMLCanvasElement;
-  let ctx: StatefulCanvasRenderingContext2D;
-
-  interface StatefulCanvasRenderingContext2D extends CanvasRenderingContext2D {
-    currentX?: number;
-    currentY?: number;
-  }
+  let ctx: CanvasRenderingContext2D;
+  let input = "";
 
   const worker = new Worker("./worker.js");
 
@@ -15,6 +12,7 @@
     ctx: CanvasRenderingContext2D,
     fn: (ctx: CanvasRenderingContext2D) => void
   ) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     ctx.moveTo(0, 0);
 
@@ -33,11 +31,10 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    ctx.currentX = 0;
-    ctx.currentY = 0;
-
     ctx.translate(canvas.width / 2, canvas.height / 2);
   });
+
+  $: worker.postMessage(input);
 
   worker.addEventListener("message", async (event) => {
     const blob = new Blob([event.data], { type: "text/javascript" });
@@ -45,11 +42,10 @@
     const { default: draw_compiled } = await import(url);
     prepare_then(ctx, draw_compiled);
   });
-
-  worker.postMessage("repeat 4 (forward 100 right 90)");
 </script>
 
 <canvas bind:this={canvas} />
+<Console bind:input />
 
 <style>
 </style>
