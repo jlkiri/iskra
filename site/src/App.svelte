@@ -7,6 +7,8 @@
 
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
+  let rafHandles: Array<number> = [];
+
   let command = "";
 
   const speed = 200;
@@ -20,14 +22,13 @@
     const duration = (to / speed) * 1000;
 
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
 
     return new Promise<void>((resolve) => {
       let start;
 
       function update(timestamp) {
         clearCanvas();
-
         if (!start) {
           start = timestamp;
         }
@@ -44,10 +45,10 @@
         ctx.lineTo(sineOut(elapsed / duration) * to, 0);
         ctx.closePath();
         ctx.stroke();
-        requestAnimationFrame(update);
+        rafHandles.push(requestAnimationFrame(update));
       }
 
-      requestAnimationFrame(update);
+      rafHandles.push(requestAnimationFrame(update));
     });
   }
 
@@ -64,8 +65,6 @@
     resetCanvas();
 
     window.addEventListener("resize", handleWindowResize);
-
-    // drawLine(500);
   });
 
   $: onDestroy(() => {
@@ -85,27 +84,25 @@
     ctx: CanvasRenderingContext2D,
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) {
-    resetCanvas();
-
-    //ctx.beginPath();
-    //ctx.moveTo(0, 0);
-
     ctx.strokeStyle = "white";
     ctx.lineWidth = 2;
 
     fn(ctx, drawLine);
-
-    ctx.closePath();
-    ctx.stroke();
   }
 
   $: worker.postMessage(command);
 
-  // repeat 4 (forward 100 right 90)
+  // repeat 8 (forward 100 right 45)
 
   worker.addEventListener("message", async (event) => {
-    const drawCompiled = await evaluateJS(event.data);
-    prepareCanvasThen(ctx, drawCompiled);
+    for (const rafHandle of rafHandles) {
+      cancelAnimationFrame(rafHandle);
+    }
+    resetCanvas();
+    try {
+      const drawCompiled = await evaluateJS(event.data);
+      prepareCanvasThen(ctx, drawCompiled);
+    } catch {}
   });
 </script>
 
