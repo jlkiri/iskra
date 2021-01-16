@@ -11,24 +11,20 @@
 
   let command = "";
 
-  const speed = 200;
+  const speed = 3000;
 
-  function clearCanvas() {
+  /* function clearCanvas() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
+  } */
 
   function drawLine(to: number) {
     const duration = (to / speed) * 1000;
-
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 1;
 
     return new Promise<void>((resolve) => {
       let start;
 
       function update(timestamp) {
-        clearCanvas();
         if (!start) {
           start = timestamp;
         }
@@ -45,6 +41,7 @@
         ctx.lineTo(sineOut(elapsed / duration) * to, 0);
         ctx.closePath();
         ctx.stroke();
+
         rafHandles.push(requestAnimationFrame(update));
       }
 
@@ -56,6 +53,8 @@
 
   onMount(() => {
     ctx = canvas.getContext("2d", { alpha: false });
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 2;
 
     console.log(window.innerWidth, window.innerHeight);
 
@@ -92,13 +91,16 @@
 
   $: worker.postMessage(command);
 
-  // repeat 8 (forward 100 right 45)
+  // repeat 60 (repeat 8 (forward 100 right 45) right 6)
+  // repeat 60 (repeat 6 (forward 100 right 60) right 6)
 
   worker.addEventListener("message", async (event) => {
     for (const rafHandle of rafHandles) {
       cancelAnimationFrame(rafHandle);
     }
+
     resetCanvas();
+
     try {
       const drawCompiled = await evaluateJS(event.data);
       prepareCanvasThen(ctx, drawCompiled);

@@ -121,6 +121,12 @@ class Parser {
         return this.motion();
     }
     parse() {
+        /* const fragments = [];
+    
+        while (!this.isAtEnd()) {
+          fragments.push(this.command());
+          this.advance();
+        } */
         return this.command();
     }
     next() {
@@ -265,9 +271,12 @@ class Scanner {
 }
 
 self.addEventListener("message", (event) => {
-    const scanner = new Scanner(event.data);
-    const parser = new Parser(scanner);
-    const compiler = new Compiler();
-    self.postMessage(compiler.compile_iter(parser));
+    try {
+        const scanner = new Scanner(event.data);
+        const parser = new Parser(scanner);
+        const compiler = new Compiler();
+        self.postMessage(compiler.compile_iter(parser));
+    }
+    catch (_a) { }
 });
 //# sourceMappingURL=worker.js.map
