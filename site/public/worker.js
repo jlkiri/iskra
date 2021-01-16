@@ -175,7 +175,7 @@ class Compiler {
         }
         return `
       export default function draw(ctx) { 
-        ${this.code.join("\n")}\n
+        ${this.code.join("\n")}
       }
   `;
     }

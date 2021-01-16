@@ -1,6 +1,5 @@
 import * as Expr from "./expr.js";
 import { Parser } from "./parser.js";
-import prettier from "prettier";
 
 export interface ExprVisitor<T> {
   visitLiteralExpr(expr: Expr.Literal): T;
@@ -58,7 +57,7 @@ export class Compiler implements ExprVisitor<string> {
 
     return `
       export default function draw(ctx) { 
-        ${this.code.join("\n")}\n
+        ${this.code.join("\n")}
       }
   `;
   }

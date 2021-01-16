@@ -5,6 +5,7 @@
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   "compilerOptions": {
     "isolatedModules": false,
+    "module": "es2020",
     "lib": [
       "webworker",
       "DOM",
