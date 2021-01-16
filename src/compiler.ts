@@ -31,7 +31,7 @@ export class Compiler implements ExprVisitor<string> {
 
   visitForwardExpr(expr: Expr.Forward) {
     return `
-      ctx.lineTo(${this.evaluate(expr.distance)}, 0);
+      await drawLine(${this.evaluate(expr.distance)});
       ctx.translate(${this.evaluate(expr.distance)}, 0);
     `;
   }
@@ -56,7 +56,7 @@ export class Compiler implements ExprVisitor<string> {
     }
 
     return `
-      export default function draw(ctx) { 
+      export default async function draw(ctx, drawLine) { 
         ${this.code.join("\n")}
       }
   `;

@@ -41,7 +41,8 @@
 
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        ctx.lineTo(sineOut(elapsed / duration) * 500, 0);
+        ctx.lineTo(sineOut(elapsed / duration) * to, 0);
+        ctx.closePath();
         ctx.stroke();
         requestAnimationFrame(update);
       }
@@ -64,7 +65,7 @@
 
     window.addEventListener("resize", handleWindowResize);
 
-    drawLine(500);
+    // drawLine(500);
   });
 
   $: onDestroy(() => {
@@ -82,23 +83,25 @@
 
   function prepareCanvasThen(
     ctx: CanvasRenderingContext2D,
-    fn: (ctx: CanvasRenderingContext2D) => void
+    fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) {
     resetCanvas();
 
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
+    //ctx.beginPath();
+    //ctx.moveTo(0, 0);
 
     ctx.strokeStyle = "white";
     ctx.lineWidth = 2;
 
-    fn(ctx);
+    fn(ctx, drawLine);
 
     ctx.closePath();
     ctx.stroke();
   }
 
-  // $: worker.postMessage(command);
+  $: worker.postMessage(command);
+
+  // repeat 4 (forward 100 right 90)
 
   worker.addEventListener("message", async (event) => {
     const drawCompiled = await evaluateJS(event.data);
