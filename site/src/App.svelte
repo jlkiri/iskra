@@ -8,9 +8,9 @@
   let ctx: CanvasRenderingContext2D;
   let rafHandles: Array<number> = [];
 
-  let command = "repeat 60 (repeat 6 (forward 100 right 60) right 6)";
+  let command = "repeat 12 (repeat 8 (forward 200 right 45) right 30)";
 
-  const speed = 600;
+  const speed = 2000;
 
   function drawLine(to: number) {
     const duration = (to / speed) * 1000;
@@ -26,7 +26,11 @@
         const elapsed = timestamp - start;
 
         if (elapsed >= duration) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
           ctx.lineTo(to, 0);
+          ctx.closePath();
+          ctx.stroke();
           resolve();
           return;
         }
@@ -90,6 +94,7 @@
 
   // repeat 60 (repeat 8 (forward 100 right 45) right 6)
   // repeat 60 (repeat 6 (forward 100 right 60) right 6)
+  // repeat 12 (repeat 8 (forward 200 right 45) right 30)
 
   worker.addEventListener("message", async (event) => {
     resetCanvas();
