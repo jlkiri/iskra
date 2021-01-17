@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { sineOut } from "svelte/easing";
+  import { cubicOut } from "svelte/easing";
   import { evaluateJS, debounce } from "./utils.js";
   import Console from "./Console.svelte";
 
@@ -10,7 +10,7 @@
 
   let command = "repeat 60 (repeat 6 (forward 100 right 60) right 6)";
 
-  const speed = 5000;
+  const speed = 600;
 
   function drawLine(to: number) {
     const duration = (to / speed) * 1000;
@@ -18,7 +18,7 @@
     return new Promise<void>((resolve) => {
       let start;
 
-      function update(timestamp) {
+      async function update(timestamp) {
         if (!start) {
           start = timestamp;
         }
@@ -26,13 +26,14 @@
         const elapsed = timestamp - start;
 
         if (elapsed >= duration) {
+          ctx.lineTo(to, 0);
           resolve();
           return;
         }
 
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        ctx.lineTo(sineOut(Math.round(elapsed / duration)) * to, 0);
+        ctx.lineTo(Math.round(cubicOut(elapsed / duration) * to), 0);
         ctx.closePath();
         ctx.stroke();
 
@@ -47,8 +48,6 @@
 
   onMount(() => {
     ctx = canvas.getContext("2d", { alpha: false });
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -65,6 +64,12 @@
   const worker = new Worker("./worker.js");
 
   function resetCanvas() {
+    for (const handle of rafHandles) {
+      cancelAnimationFrame(handle);
+    }
+
+    rafHandles = [];
+
     ctx.resetTransform();
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -76,7 +81,7 @@
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) {
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
 
     fn(ctx, drawLine);
   }
@@ -87,10 +92,6 @@
   // repeat 60 (repeat 6 (forward 100 right 60) right 6)
 
   worker.addEventListener("message", async (event) => {
-    for (const rafHandle of rafHandles) {
-      cancelAnimationFrame(rafHandle);
-    }
-
     resetCanvas();
 
     if (event.data.error) {
