@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { tweened } from "svelte/motion";
   import { sineOut } from "svelte/easing";
   import { evaluateJS, debounce } from "./utils.js";
   import Console from "./Console.svelte";
@@ -27,7 +26,6 @@
         const elapsed = timestamp - start;
 
         if (elapsed >= duration) {
-          // ctx.lineTo(to, 0);
           resolve();
           return;
         }
@@ -51,8 +49,6 @@
     ctx = canvas.getContext("2d", { alpha: false });
     ctx.strokeStyle = "white";
     ctx.lineWidth = 2;
-
-    console.log(window.innerWidth, window.innerHeight);
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -97,11 +93,16 @@
 
     resetCanvas();
 
-    try {
-      console.log(event.data);
-      const drawCompiled = await evaluateJS(event.data);
-      prepareCanvasThen(ctx, drawCompiled);
-    } catch {}
+    if (event.data.error) {
+      return;
+    }
+
+    const drawCompiled = await evaluateJS(event.data.compiled);
+    prepareCanvasThen(ctx, drawCompiled);
+  });
+
+  worker.addEventListener("error", (event) => {
+    console.warn(`${event.message}`);
   });
 </script>
 

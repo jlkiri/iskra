@@ -52,6 +52,8 @@ class Repeat {
     }
 }
 
+class ParseError extends Error {
+}
 class Parser {
     constructor(scanner) {
         this.scanner = scanner;
@@ -84,7 +86,7 @@ class Parser {
         if (this.match(Token.RIGHT)) {
             return new Right(this.literal());
         }
-        throw new Error(`Expected motion keyword.`);
+        throw new ParseError(`Expected motion keyword.`);
     }
     isAtEnd() {
         return this.peek().type == Token.EOF;
@@ -121,12 +123,6 @@ class Parser {
         return this.motion();
     }
     parse() {
-        /* const fragments = [];
-    
-        while (!this.isAtEnd()) {
-          fragments.push(this.command());
-          this.advance();
-        } */
         return this.command();
     }
     next() {
@@ -139,9 +135,6 @@ class Parser {
         return this;
     }
 }
-/* fs.writeFileSync("output.js", compiler.compile_iter(parser), {
-  encoding: "utf8",
-}); */
 
 class Compiler {
     constructor() {
@@ -271,12 +264,15 @@ class Scanner {
 }
 
 self.addEventListener("message", (event) => {
+    const scanner = new Scanner(event.data);
+    const parser = new Parser(scanner);
+    const compiler = new Compiler();
     try {
-        const scanner = new Scanner(event.data);
-        const parser = new Parser(scanner);
-        const compiler = new Compiler();
-        self.postMessage(compiler.compile_iter(parser));
+        const compiled = compiler.compile_iter(parser);
+        self.postMessage({ error: null, compiled });
     }
-    catch (_a) { }
+    catch (e) {
+        self.postMessage({ error: e, compiled: null });
+    }
 });
 //# sourceMappingURL=worker.js.map

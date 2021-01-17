@@ -4,6 +4,8 @@ import { Token, TokenType } from "./token.js";
 import * as Expr from "./expr.js";
 import type { Motion } from "./expr.js";
 
+class ParseError extends Error {}
+
 export class Parser {
   private scanner: Scanner;
   private current: SparkToken;
@@ -51,7 +53,7 @@ export class Parser {
       return new Expr.Right(this.literal());
     }
 
-    throw new Error(`Expected motion keyword.`);
+    throw new ParseError(`Expected motion keyword.`);
   }
 
   isAtEnd() {
@@ -97,13 +99,6 @@ export class Parser {
   }
 
   parse() {
-    /* const fragments = [];
-
-    while (!this.isAtEnd()) {
-      fragments.push(this.command());
-      this.advance();
-    } */
-
     return this.command();
   }
 
@@ -119,7 +114,3 @@ export class Parser {
     return this;
   }
 }
-
-/* fs.writeFileSync("output.js", compiler.compile_iter(parser), {
-  encoding: "utf8",
-}); */
