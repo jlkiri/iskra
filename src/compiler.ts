@@ -5,8 +5,7 @@ export interface ExprVisitor<T> {
   visitLiteralExpr(expr: Expr.Literal): T
   visitRepeatExpr(expr: Expr.Repeat): T
   visitForwardExpr(expr: Expr.Forward): T
-  visitRightExpr(expr: Expr.Right): T
-  visitLeftExpr(expr: Expr.Left): T
+  visitTurnExpr(expr: Expr.Turn): T
 }
 
 export class Compiler implements ExprVisitor<string> {
@@ -36,14 +35,10 @@ export class Compiler implements ExprVisitor<string> {
     `
   }
 
-  visitRightExpr(expr: Expr.Right) {
+  visitTurnExpr(expr: Expr.Turn) {
     return `
       ctx.rotate(${this.evaluate(expr.distance)} * Math.PI / 180);
     `
-  }
-
-  visitLeftExpr(expr: Expr.Left) {
-    return `ctx.rotate(-${this.evaluate(expr.distance)} * Math.PI / 180);`
   }
 
   evaluate(expr: Expr.Visitable<string>): any {

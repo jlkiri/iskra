@@ -1,13 +1,12 @@
 const Token = {
     FORWARD: "FORWARD",
-    RIGHT: "RIGHT",
-    LEFT: "LEFT",
+    TURN: "TURN",
     LITERAL: "LITERAL",
     REPEAT: "REPEAT",
     OB: "OB",
     CB: "CB",
     ERROR: "ERROR",
-    EOF: "EOF",
+    EOF: "EOF"
 };
 
 class Forward {
@@ -18,20 +17,12 @@ class Forward {
         return visitor.visitForwardExpr(this);
     }
 }
-class Right {
+class Turn {
     constructor(distance) {
         this.distance = distance;
     }
     accept(visitor) {
-        return visitor.visitRightExpr(this);
-    }
-}
-class Left {
-    constructor(distance) {
-        this.distance = distance;
-    }
-    accept(visitor) {
-        return visitor.visitLeftExpr(this);
+        return visitor.visitTurnExpr(this);
     }
 }
 class Literal {
@@ -80,11 +71,8 @@ class Parser {
         if (this.match(Token.FORWARD)) {
             return new Forward(this.literal());
         }
-        if (this.match(Token.LEFT)) {
-            return new Left(this.literal());
-        }
-        if (this.match(Token.RIGHT)) {
-            return new Right(this.literal());
+        if (this.match(Token.TURN)) {
+            return new Turn(this.literal());
         }
         throw new ParseError(`Expected motion keyword.`);
     }
@@ -157,13 +145,10 @@ class Compiler {
       ctx.translate(${this.evaluate(expr.distance)}, 0);
     `;
     }
-    visitRightExpr(expr) {
+    visitTurnExpr(expr) {
         return `
       ctx.rotate(${this.evaluate(expr.distance)} * Math.PI / 180);
     `;
-    }
-    visitLeftExpr(expr) {
-        return `ctx.rotate(-${this.evaluate(expr.distance)} * Math.PI / 180);`;
     }
     evaluate(expr) {
         return expr.accept(this);
@@ -186,7 +171,7 @@ function return_iter(value) {
 function create_token(type, value) {
     return {
         type,
-        value,
+        value
     };
 }
 class Scanner {
@@ -197,8 +182,7 @@ class Scanner {
         this.reserved = new Map();
         this.reserved.set("repeat", Token.REPEAT);
         this.reserved.set("forward", Token.FORWARD);
-        this.reserved.set("right", Token.RIGHT);
-        this.reserved.set("left", Token.LEFT);
+        this.reserved.set("turn", Token.TURN);
     }
     next() {
         this.start = this.current;

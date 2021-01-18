@@ -1,123 +1,122 @@
-import { Token } from "./token.js";
-import type { TokenType } from "./token.js";
+import { Token } from "./token.js"
+import type { TokenType } from "./token.js"
 
 export type SparkToken = {
-  type: TokenType;
-  value: any;
-};
+  type: TokenType
+  value: any
+}
 
 function return_iter(value: SparkToken) {
-  return { done: false, value };
+  return { done: false, value }
 }
 
 function create_token(type: TokenType, value?: any) {
   return {
     type,
-    value,
-  };
+    value
+  }
 }
 
 export class Scanner {
-  private source: string;
-  private current: number;
-  private start: number;
-  private reserved: Map<string, TokenType>;
+  private source: string
+  private current: number
+  private start: number
+  private reserved: Map<string, TokenType>
 
   constructor(input: string) {
-    this.source = input.replace(/\s/g, "");
-    this.current = 0;
-    this.start = 0;
+    this.source = input.replace(/\s/g, "")
+    this.current = 0
+    this.start = 0
 
-    this.reserved = new Map();
+    this.reserved = new Map()
 
-    this.reserved.set("repeat", Token.REPEAT);
-    this.reserved.set("forward", Token.FORWARD);
-    this.reserved.set("right", Token.RIGHT);
-    this.reserved.set("left", Token.LEFT);
+    this.reserved.set("repeat", Token.REPEAT)
+    this.reserved.set("forward", Token.FORWARD)
+    this.reserved.set("turn", Token.TURN)
   }
 
   next() {
-    this.start = this.current;
+    this.start = this.current
 
     if (this.isAtEnd()) {
-      return { done: true, value: create_token(Token.EOF) };
+      return { done: true, value: create_token(Token.EOF) }
     }
 
-    const char = this.advance();
+    const char = this.advance()
 
     if (this.is_alpha(char)) {
-      return return_iter(this.keyword());
+      return return_iter(this.keyword())
     }
 
     if (this.is_numeric(char)) {
-      return return_iter(this.number());
+      return return_iter(this.number())
     }
 
     switch (char) {
       case "(":
-        return return_iter(create_token(Token.OB));
+        return return_iter(create_token(Token.OB))
       case ")":
-        return return_iter(create_token(Token.CB));
+        return return_iter(create_token(Token.CB))
     }
 
-    return return_iter(create_token(Token.ERROR, `Unexpected token: ${char}.`));
+    return return_iter(create_token(Token.ERROR, `Unexpected token: ${char}.`))
   }
 
   is_alpha(char: string) {
-    return /[a-zA-Z]/.test(char);
+    return /[a-zA-Z]/.test(char)
   }
 
   is_numeric(char: string) {
-    return /[0-9]/.test(char);
+    return /[0-9]/.test(char)
   }
 
   is_reserved(char: string) {
-    return this.reserved.has(char);
+    return this.reserved.has(char)
   }
 
   current_slice() {
-    return this.source.slice(this.start, this.current);
+    return this.source.slice(this.start, this.current)
   }
 
   peek() {
-    return this.source.charAt(this.current);
+    return this.source.charAt(this.current)
   }
 
   keyword() {
     while (this.is_alpha(this.peek())) {
-      this.advance();
+      this.advance()
     }
 
-    const slice = this.current_slice();
+    const slice = this.current_slice()
 
     if (this.is_reserved(slice)) {
-      return create_token(this.reserved.get(slice)!, slice);
+      return create_token(this.reserved.get(slice)!, slice)
     }
 
     return create_token(
       Token.ERROR,
       `Unexpected token: ${this.current_slice()}`
-    );
+    )
   }
 
   number() {
     while (this.is_numeric(this.peek())) {
-      this.advance();
+      this.advance()
     }
 
-    return create_token(Token.LITERAL, this.current_slice());
+    return create_token(Token.LITERAL, this.current_slice())
   }
 
   isAtEnd() {
-    return this.current >= this.source.length;
+    return this.current >= this.source.length
   }
 
   advance() {
-    this.current += 1;
-    return this.source.charAt(this.current - 1);
+    this.current += 1
+    return this.source.charAt(this.current - 1)
   }
 
   [Symbol.iterator]() {
-    return this;
+    return this
   }
 }

@@ -14,11 +14,13 @@
 
   const worker = new Worker("./worker.js")
 
-  $: worker.postMessage(command)
+  function handleCommand(event) {
+    worker.postMessage(event.detail.command)
+  }
 
   // repeat 60 (repeat 8 (forward 100 right 45) right 6)
   // repeat 60 (repeat 6 (forward 100 right 60) right 6)
-  // repeat 12 (repeat 8 (forward 200 right 45) right 30)
+  // repeat 12 (repeat 8 (forward 200 turn 45) turn 30)
 
   worker.addEventListener("message", async (event) => {
     if (event.data.error) {
@@ -39,7 +41,7 @@
   <div class="canvas-wrapper">
     <Canvas bind:resetCanvas bind:prepareCanvasThen bind:ctx />
   </div>
-  <Console bind:command />
+  <Console on:command={handleCommand} bind:command />
 </div>
 
 <style>
@@ -47,11 +49,8 @@
     display: flex;
   }
 
-  .container > * {
-    height: 100vh;
-  }
-
   .canvas-wrapper {
+    height: 100vh;
     flex: 1;
   }
 </style>

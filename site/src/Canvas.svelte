@@ -2,9 +2,8 @@
   import { onMount, onDestroy } from "svelte"
   import { cubicOut } from "svelte/easing"
   import { debounce } from "./utils.js"
-  import { canvas as canvasStore, ctx as ctxStore } from "./canvas"
 
-  const speed = 2000
+  const speed = 1600
 
   export let ctx: CanvasRenderingContext2D
   let canvas: HTMLCanvasElement
@@ -18,6 +17,8 @@
 
     rafHandles = []
 
+    canvas.width = 0
+
     setCanvasSize()
 
     ctx.resetTransform()
@@ -30,6 +31,8 @@
     ctx: CanvasRenderingContext2D,
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) {
+    resetCanvas()
+
     ctx.strokeStyle = "white"
     ctx.lineWidth = 3
 
@@ -38,8 +41,8 @@
 
   function setCanvasSize() {
     const parentRect = (canvas.parentNode as HTMLDivElement).getBoundingClientRect()
-    canvas.width = parentRect.width
-    canvas.height = parentRect.height
+    canvas.width = parentRect.width + 1
+    canvas.height = parentRect.height + 1
   }
 
   function strokeLine(to: number) {
@@ -82,9 +85,6 @@
 
   onMount(() => {
     ctx = canvas.getContext("2d", { alpha: false })
-
-    $canvasStore = canvas
-    $ctxStore = ctx
 
     setCanvasSize()
     resetCanvas()
