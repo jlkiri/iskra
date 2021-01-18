@@ -6,10 +6,6 @@
   "compilerOptions": {
     "isolatedModules": false,
     "module": "es2020",
-    "lib": [
-      "webworker",
-      "DOM",
-      "ES6"
-    ]
+    "lib": ["DOM.Iterable", "webworker", "DOM", "ES2020"]
   }
 }
