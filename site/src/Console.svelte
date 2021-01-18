@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let command = "repeat 60 (repeat 6 (forward 100 right 60) right 6)";
+  export let command = "repeat 60 (repeat 6 (forward 100 right 60) right 6)"
 </script>
 
 <input type="text" bind:value={command} />

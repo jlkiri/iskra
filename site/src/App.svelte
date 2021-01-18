@@ -1,115 +1,123 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
-  import { cubicOut } from "svelte/easing";
-  import { evaluateJS, debounce } from "./utils.js";
-  import Console from "./Console.svelte";
+  import { onMount, onDestroy } from "svelte"
+  import { cubicOut } from "svelte/easing"
+  import { evaluateJS, debounce } from "./utils.js"
+  import Console from "./Console.svelte"
 
-  let canvas: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D;
-  let rafHandles: Array<number> = [];
+  let canvas: HTMLCanvasElement
+  let ctx: CanvasRenderingContext2D
+  let rafHandles: Array<number> = []
 
-  let command = "repeat 12 (repeat 8 (forward 200 right 45) right 30)";
+  let command = "repeat 12 (repeat 8 (forward 200 right 45) right 30)"
 
-  const speed = 2000;
+  const speed = 2000
+
+  function strokeLine(to: number) {
+    ctx.beginPath()
+    ctx.moveTo(0, 0)
+    ctx.lineTo(to, 0)
+    ctx.closePath()
+    ctx.stroke()
+  }
 
   function drawLine(to: number) {
-    const duration = (to / speed) * 1000;
+    const duration = (to / speed) * 1000
 
     return new Promise<void>((resolve) => {
-      let start;
+      let start
 
       async function update(timestamp) {
         if (!start) {
-          start = timestamp;
+          start = timestamp
         }
 
-        const elapsed = timestamp - start;
+        const elapsed = timestamp - start
 
         if (elapsed >= duration) {
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.lineTo(to, 0);
-          ctx.closePath();
-          ctx.stroke();
-          resolve();
-          return;
+          ctx.beginPath()
+          ctx.moveTo(0, 0)
+          ctx.lineTo(to, 0)
+          ctx.closePath()
+          ctx.stroke()
+          resolve()
+          return
         }
 
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(Math.round(cubicOut(elapsed / duration) * to), 0);
-        ctx.closePath();
-        ctx.stroke();
+        ctx.beginPath()
+        ctx.moveTo(0, 0)
+        ctx.lineTo(Math.round(cubicOut(elapsed / duration) * to), 0)
+        ctx.closePath()
+        ctx.stroke()
 
-        rafHandles.push(requestAnimationFrame(update));
+        rafHandles.push(requestAnimationFrame(update))
       }
 
-      rafHandles.push(requestAnimationFrame(update));
-    });
+      rafHandles.push(requestAnimationFrame(update))
+    })
   }
 
-  const handleWindowResize = debounce(resetCanvas, 500);
+  const handleWindowResize = debounce(resetCanvas, 500)
 
   onMount(() => {
-    ctx = canvas.getContext("2d", { alpha: false });
+    ctx = canvas.getContext("2d", { alpha: false })
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
 
-    resetCanvas();
+    resetCanvas()
 
-    window.addEventListener("resize", handleWindowResize);
-  });
+    window.addEventListener("resize", handleWindowResize)
+  })
 
   $: onDestroy(() => {
-    window.removeEventListener("resize", handleWindowResize);
-  });
+    window.removeEventListener("resize", handleWindowResize)
+  })
 
-  const worker = new Worker("./worker.js");
+  const worker = new Worker("./worker.js")
 
   function resetCanvas() {
     for (const handle of rafHandles) {
-      cancelAnimationFrame(handle);
+      cancelAnimationFrame(handle)
     }
 
-    rafHandles = [];
+    rafHandles = []
 
-    ctx.resetTransform();
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.resetTransform()
+    ctx.fillStyle = "black"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.translate(canvas.width / 2, canvas.height / 2)
   }
 
   function prepareCanvasThen(
     ctx: CanvasRenderingContext2D,
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) {
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = "white"
+    ctx.lineWidth = 3
 
-    fn(ctx, drawLine);
+    fn(ctx, drawLine)
   }
 
-  $: worker.postMessage(command);
+  $: worker.postMessage(command)
 
   // repeat 60 (repeat 8 (forward 100 right 45) right 6)
   // repeat 60 (repeat 6 (forward 100 right 60) right 6)
   // repeat 12 (repeat 8 (forward 200 right 45) right 30)
 
   worker.addEventListener("message", async (event) => {
-    resetCanvas();
+    resetCanvas()
 
     if (event.data.error) {
-      return;
+      return
     }
 
-    const drawCompiled = await evaluateJS(event.data.compiled);
-    prepareCanvasThen(ctx, drawCompiled);
-  });
+    const drawCompiled = await evaluateJS(event.data.compiled)
+    prepareCanvasThen(ctx, drawCompiled)
+  })
 
   worker.addEventListener("error", (event) => {
-    console.warn(`${event.message}`);
-  });
+    console.warn(`${event.message}`)
+  })
 </script>
 
 <canvas bind:this={canvas} />
