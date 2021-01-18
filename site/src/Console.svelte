@@ -1,21 +1,23 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from "svelte"
+  import { onMount, createEventDispatcher } from "svelte";
+  import Autocomplete from "./Autocomplete.svelte";
 
-  let commands = []
-  export let command = "repeat 20 (repeat 8 (forward 170 right 45) right 18)"
+  let commands = [];
+  let input;
+  export let command = "repeat 20 (repeat 8 (forward 170 right 45) right 18)";
 
-  const dispatch = createEventDispatcher()
+  const dispatch = createEventDispatcher();
 
   onMount(() => {
     window.addEventListener("keydown", (event) => {
       if (event.key == "Enter") {
-        dispatch("command", { command })
+        dispatch("command", { command });
 
-        commands = [...commands, command]
-        command = ""
+        commands = [...commands, command];
+        command = "";
       }
-    })
-  })
+    });
+  });
 </script>
 
 <div class="console">
@@ -24,7 +26,10 @@
       <li>{com}</li>
     {/each}
   </ul>
-  <div class="input"><input type="text" bind:value={command} /></div>
+  <div class="input">
+    <input type="text" bind:this={input} bind:value={command} />
+  </div>
+  <Autocomplete value={command} {input} />
 </div>
 
 <style>
