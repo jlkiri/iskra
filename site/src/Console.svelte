@@ -4,17 +4,21 @@
 
   let commands = [];
   let input;
+  let state;
+
   export let command = "repeat 20 (repeat 8 (forward 170 right 45) right 18)";
 
   const dispatch = createEventDispatcher();
 
   onMount(() => {
     window.addEventListener("keydown", (event) => {
-      if (event.key == "Enter") {
-        dispatch("command", { command });
+      if (state != "selecting") {
+        if (event.key == "Enter") {
+          dispatch("command", { command });
 
-        commands = [...commands, command];
-        command = "";
+          commands = [...commands, command];
+          command = "";
+        }
       }
     });
   });
@@ -29,7 +33,7 @@
   <div class="input">
     <input type="text" bind:this={input} bind:value={command} />
   </div>
-  <Autocomplete value={command} {input} />
+  <Autocomplete bind:state bind:value={command} {input} />
 </div>
 
 <style>
