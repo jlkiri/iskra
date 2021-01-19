@@ -17,7 +17,8 @@
     "automate",
     "australia",
     "auxiliary",
-    "autism",
+    "artisan",
+    "artifact",
   ];
 
   $: currentWord = value.slice(currentWordOffset);

@@ -21,6 +21,7 @@
   // repeat 60 (repeat 8 (forward 100 right 45) right 6)
   // repeat 60 (repeat 6 (forward 100 right 60) right 6)
   // repeat 12 (repeat 8 (forward 200 turn 45) turn 30)
+  // repeat 20 (repeat 8 (forward 170 turn 45) turn 18)
 
   worker.addEventListener("message", async (event) => {
     if (event.data.error) {

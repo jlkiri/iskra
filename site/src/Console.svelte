@@ -6,7 +6,7 @@
   let input;
   let state;
 
-  export let command = "repeat 20 (repeat 8 (forward 170 right 45) right 18)";
+  export let command = "";
 
   const dispatch = createEventDispatcher();
 
