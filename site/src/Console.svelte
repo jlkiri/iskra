@@ -12,7 +12,7 @@
 
   onMount(() => {
     window.addEventListener("keydown", (event) => {
-      if (state != "selecting") {
+      if (state == "idle" || state == "rejected") {
         if (event.key == "Enter") {
           dispatch("command", { command });
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  type State = "idle" | "selecting" | "rejected";
+  type State = "idle" | "selecting" | "rejected" | "selected";
 
   export let input;
   export let value;
@@ -11,7 +11,7 @@
   let selectedIdx = 0;
   let currentWordOffset = 0;
 
-  let keywords = [
+  /* let keywords = [
     "automobile",
     "automatic",
     "automate",
@@ -19,7 +19,9 @@
     "auxiliary",
     "artisan",
     "artifact",
-  ];
+  ]; */
+
+  let keywords = ["repeat", "forward", "turn"];
 
   $: currentWord = value.slice(currentWordOffset);
 
@@ -42,6 +44,12 @@
 
   onMount(() => {
     window.addEventListener("keydown", (event) => {
+      if (state == "selected") {
+        if (event.key == "Enter") {
+          state = "idle";
+        }
+      }
+
       if (state === "selecting") {
         if (event.key == "ArrowDown") {
           selectedIdx = (selectedIdx + 1) % possibleKeywords.length;
@@ -62,6 +70,7 @@
             possibleKeywords[selectedIdx]
           }`;
           selectedIdx = 0;
+          state = "selected";
         }
 
         if (event.key == " ") {
