@@ -1,21 +1,19 @@
 <script lang="ts">
-  import { evaluateJS } from "./utils.js";
-  import Console from "./Console.svelte";
-  import Canvas from "./Canvas.svelte";
+  import { evaluateJS } from "./utils.js"
+  import Console from "./Console.svelte"
+  import Canvas from "./Canvas.svelte"
 
-  let ctx: CanvasRenderingContext2D;
-  let resetCanvas: () => void;
+  let ctx: CanvasRenderingContext2D
+  let resetCanvas: () => void
   let prepareCanvasThen: (
     ctx: CanvasRenderingContext2D,
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
-  ) => void;
+  ) => void
 
-  let command = "";
-
-  const worker = new Worker("./worker.js");
+  const worker = new Worker("./worker.js")
 
   function handleCommand(event) {
-    worker.postMessage(event.detail.command);
+    worker.postMessage(event.detail.command)
   }
 
   // repeat 60 (repeat 8 (forward 100 right 45) right 6)
@@ -25,24 +23,24 @@
 
   worker.addEventListener("message", async (event) => {
     if (event.data.error) {
-      resetCanvas();
-      return;
+      resetCanvas()
+      return
     }
 
-    const render = await evaluateJS(event.data.compiled);
-    prepareCanvasThen(ctx, render);
-  });
+    const render = await evaluateJS(event.data.compiled)
+    prepareCanvasThen(ctx, render)
+  })
 
   worker.addEventListener("error", (event) => {
-    console.warn(`Iskra compiler error: ${event.message}`);
-  });
+    console.warn(`Iskra internal error: ${event.message}`)
+  })
 </script>
 
 <div class="container">
   <div class="canvas-wrapper">
-    <Canvas bind:resetCanvas bind:prepareCanvasThen bind:ctx />
+    <Canvas bind:prepareCanvasThen bind:resetCanvas bind:ctx />
   </div>
-  <Console on:command={handleCommand} bind:command />
+  <Console on:command={handleCommand} />
 </div>
 
 <style>
@@ -53,5 +51,10 @@
   .canvas-wrapper {
     height: 100vh;
     flex: 1;
+  }
+
+  :global(body) {
+    font-family: "Source Code Pro", monospace;
+    font-size: 24px;
   }
 </style>

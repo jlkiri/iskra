@@ -1,100 +1,94 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte"
+  import { state } from "./stores/input.js"
 
-  type State = "idle" | "selecting" | "rejected" | "selected";
+  export let input
+  export let value
 
-  export let input;
-  export let value;
-  export let state: State = "idle";
+  let offset = 0
+  let selectedIdx = 0
+  let currentWordOffset = 0
 
-  let offset = 0;
-  let selectedIdx = 0;
-  let currentWordOffset = 0;
+  let keywords = ["repeat", "forward", "turn"]
 
-  /* let keywords = [
-    "automobile",
-    "automatic",
-    "automate",
-    "australia",
-    "auxiliary",
-    "artisan",
-    "artifact",
-  ]; */
-
-  let keywords = ["repeat", "forward", "turn"];
-
-  $: currentWord = value.slice(currentWordOffset);
+  $: currentWord = value.slice(currentWordOffset)
 
   $: possibleKeywords = keywords.filter(
     (k) =>
       currentWord && k.startsWith(currentWord) && k.length > currentWord.length
-  );
+  )
 
-  $: state =
-    possibleKeywords.length > 0 && state != "rejected" ? "selecting" : state;
+  $: $state =
+    possibleKeywords.length > 0 && $state != "rejected" ? "selecting" : $state
 
   $: if (value) {
-    offset = input.selectionStart;
+    offset = input.selectionStart
   }
 
-  $: console.log(state), value;
-  $: console.log(value), value;
-  $: console.log(currentWordOffset), value;
-  $: console.log(currentWord), value;
-  $: console.log(selectedIdx), value;
+  $: console.log(state), value
+  $: console.log(value), value
+  $: console.log(currentWordOffset), value
+  $: console.log(currentWord), value
+  $: console.log(selectedIdx), value
 
-  onMount(() => {
-    window.addEventListener("keydown", (event) => {
-      if (state == "selected" || state == "idle") {
-        if (event.key == "Enter") {
-          state = "idle";
-          currentWordOffset = 0;
-        }
+  function handleKeydown(event) {
+    if ($state == "selected" || $state == "idle") {
+      if (event.key == "Enter") {
+        $state = "idle"
+        currentWordOffset = 0
+      }
+    }
+
+    if ($state === "selecting") {
+      if (event.key == "ArrowDown") {
+        selectedIdx = (selectedIdx + 1) % possibleKeywords.length
       }
 
-      if (state === "selecting") {
-        if (event.key == "ArrowDown") {
-          selectedIdx = (selectedIdx + 1) % possibleKeywords.length;
-        }
-
-        if (event.key == "ArrowUp") {
-          selectedIdx =
-            selectedIdx == 0 ? possibleKeywords.length - 1 : selectedIdx - 1;
-        }
-
-        if (event.key == "Tab" || event.key == "Escape") {
-          selectedIdx = 0;
-          state = "rejected";
-        }
-
-        if (event.key == "Enter") {
-          value = `${value.slice(0, currentWordOffset)}${
-            possibleKeywords[selectedIdx]
-          }`;
-          selectedIdx = 0;
-          state = "selected";
-        }
-
-        if (event.key == " ") {
-          selectedIdx = 0;
-          state = "idle";
-        }
+      if (event.key == "ArrowUp") {
+        selectedIdx =
+          selectedIdx == 0 ? possibleKeywords.length - 1 : selectedIdx - 1
       }
 
-      if (state == "rejected") {
-        if (event.key == " ") {
-          state = "idle";
-        }
+      if (event.key == "Tab" || event.key == "Escape") {
+        selectedIdx = 0
+        $state = "rejected"
+      }
+
+      if (event.key == "Enter") {
+        value = `${value.slice(0, currentWordOffset)}${
+          possibleKeywords[selectedIdx]
+        }`
+        selectedIdx = 0
+        $state = "selected"
       }
 
       if (event.key == " ") {
-        currentWordOffset = value.length + 1;
+        selectedIdx = 0
+        $state = "idle"
       }
-    });
-  });
+    }
+
+    if ($state == "rejected") {
+      if (event.key == " ") {
+        $state = "idle"
+      }
+    }
+
+    if (event.key == " ") {
+      currentWordOffset = value.length + 1
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener("keydown", handleKeydown)
+  })
+
+  onDestroy(() => {
+    window.removeEventListener("keydown", handleKeydown)
+  })
 </script>
 
-{#if possibleKeywords.length > 0 && state != "rejected"}
+{#if possibleKeywords.length > 0 && $state != "rejected"}
   <div class="autosuggestion" style="--offset: {offset}">
     {#each possibleKeywords as kw, i}
       <div class="autosuggestion__item" class:selected={i == selectedIdx}>
@@ -108,11 +102,6 @@
 {/if}
 
 <style>
-  :global(body) {
-    font-family: monospace;
-    font-size: 24px;
-  }
-
   .autosuggestion {
     transform: translateX(calc(var(--offset) * 1ch));
     background-color: #00070e;
@@ -134,9 +123,5 @@
 
   .autosuggestion__span--matched {
     opacity: 1;
-  }
-
-  input {
-    margin: 0;
   }
 </style>

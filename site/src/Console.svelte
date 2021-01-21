@@ -1,27 +1,33 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from "svelte";
-  import Autocomplete from "./Autocomplete.svelte";
+  import { onMount, createEventDispatcher, onDestroy } from "svelte"
+  import { state } from "./stores/input.js"
+  import Autocomplete from "./Autocomplete.svelte"
 
-  let commands = [];
-  let input;
-  let state;
+  let commands = []
+  let input
 
-  export let command = "";
+  export let command = ""
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher()
+
+  function handleConsoleInput(event) {
+    if ($state == "idle" || $state == "rejected") {
+      if (event.key == "Enter") {
+        dispatch("command", { command })
+
+        commands = [...commands, command]
+        command = ""
+      }
+    }
+  }
 
   onMount(() => {
-    window.addEventListener("keydown", (event) => {
-      if (state == "idle" || state == "rejected") {
-        if (event.key == "Enter") {
-          dispatch("command", { command });
+    window.addEventListener("keydown", handleConsoleInput)
+  })
 
-          commands = [...commands, command];
-          command = "";
-        }
-      }
-    });
-  });
+  onDestroy(() => {
+    window.removeEventListener("keydown", handleConsoleInput)
+  })
 </script>
 
 <div class="console">
@@ -33,7 +39,7 @@
   <div class="input">
     <input type="text" bind:this={input} bind:value={command} />
   </div>
-  <Autocomplete bind:state bind:value={command} {input} />
+  <Autocomplete bind:value={command} {input} />
 </div>
 
 <style>

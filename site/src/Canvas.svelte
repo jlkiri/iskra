@@ -6,11 +6,12 @@
   const speed = 1600
 
   export let ctx: CanvasRenderingContext2D
+  export { resetCanvas, prepareCanvasThen }
   let canvas: HTMLCanvasElement
 
   let rafHandles: Array<number> = []
 
-  export function resetCanvas() {
+  function resetCanvas() {
     for (const handle of rafHandles) {
       cancelAnimationFrame(handle)
     }
@@ -27,7 +28,7 @@
     ctx.translate(canvas.width / 2, canvas.height / 2)
   }
 
-  export function prepareCanvasThen(
+  function prepareCanvasThen(
     ctx: CanvasRenderingContext2D,
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) {
