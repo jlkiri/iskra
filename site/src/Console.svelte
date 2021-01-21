@@ -2,7 +2,7 @@
   import { onMount, createEventDispatcher, onDestroy } from "svelte"
   import { state } from "./stores/input.js"
   import Autocomplete from "./Autocomplete.svelte"
-  import IskraSVG from "./IskraSVG.svelte"
+  import CorrectSVG from "./CorrectSVG.svelte"
 
   let history: Array<string> = []
   let command = ""
@@ -37,7 +37,10 @@
 <div class="console">
   <ul>
     {#each history as com}
-      <li>{com}</li>
+      <li class="console-line">
+        <div class="console-line__icon"><CorrectSVG /></div>
+        {com}
+      </li>
     {/each}
   </ul>
   <div class="input-wrapper">
@@ -64,12 +67,6 @@
     width: 100%;
   }
 
-  li::before {
-    content: "✅";
-    margin-right: 0.7em;
-    color: rgb(249, 115, 91);
-  }
-
   ul {
     list-style: none;
     padding: 0;
@@ -83,6 +80,11 @@
     padding: 1rem 1rem 1rem 1.5rem;
     font-size: 1.2rem;
     color: white;
+  }
+
+  .console-line .console-line__icon {
+    display: inline-block;
+    margin-right: 0.3em;
   }
 
   .input-wrapper {
