@@ -77,7 +77,7 @@
     min-width: 600px;
     height: 100vh;
     background-color: rgb(52, 48, 48);
-    padding: 1rem 1rem 1rem 1.5rem;
+    padding: 0.8rem;
     font-size: 1.2rem;
     color: white;
   }
