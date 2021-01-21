@@ -3,6 +3,7 @@
   import { state } from "./stores/input.js"
   import Autocomplete from "./Autocomplete.svelte"
   import CorrectSVG from "./CorrectSVG.svelte"
+  import SparkSVG from "./SparkSVG.svelte"
 
   let history: Array<string> = []
   let command = ""
@@ -44,6 +45,9 @@
     {/each}
   </ul>
   <div class="input-wrapper">
+    <div class="input-wrapper__icon">
+      <SparkSVG />
+    </div>
     <input type="text" bind:this={input} bind:value={command} />
   </div>
   <Autocomplete bind:value={command} {input} />
@@ -91,8 +95,7 @@
     display: flex;
   }
 
-  .input-wrapper::before {
-    content: "✨";
-    margin-right: 0.7em;
+  .input-wrapper .input-wrapper__icon {
+    margin-right: 0.9em;
   }
 </style>
