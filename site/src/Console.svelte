@@ -2,11 +2,11 @@
   import { onMount, createEventDispatcher, onDestroy } from "svelte"
   import { state } from "./stores/input.js"
   import Autocomplete from "./Autocomplete.svelte"
+  import IskraSVG from "./IskraSVG.svelte"
 
-  let commands = []
-  let input
-
-  export let command = ""
+  let history: Array<string> = []
+  let command = ""
+  let input: HTMLInputElement
 
   const dispatch = createEventDispatcher()
 
@@ -15,9 +15,13 @@
       if (event.key == "Enter") {
         dispatch("command", { command })
 
-        commands = [...commands, command]
+        history = [...history, command]
         command = ""
       }
+    }
+
+    if (event.key === "ArrowUp" && !command) {
+      command = history[history.length - 1]
     }
   }
 
@@ -32,27 +36,17 @@
 
 <div class="console">
   <ul>
-    {#each commands as com}
+    {#each history as com}
       <li>{com}</li>
     {/each}
   </ul>
-  <div class="input">
+  <div class="input-wrapper">
     <input type="text" bind:this={input} bind:value={command} />
   </div>
   <Autocomplete bind:value={command} {input} />
 </div>
 
 <style>
-  .console {
-    min-width: 600px;
-    height: 100vh;
-    background-color: rgb(52, 48, 48);
-    padding: 1rem 1rem 1rem 2rem;
-    font-family: "Source Code Pro", monospace;
-    font-size: 1.2rem;
-    color: white;
-  }
-
   input {
     width: 100%;
     background-color: rgb(52, 48, 48);
@@ -61,10 +55,19 @@
     padding: 0;
   }
 
-  .input,
+  input:focus {
+    outline: rgb(52, 48, 48);
+  }
+
   li {
     position: relative;
     width: 100%;
+  }
+
+  li::before {
+    content: "✅";
+    margin-right: 0.7em;
+    color: rgb(249, 115, 91);
   }
 
   ul {
@@ -73,16 +76,21 @@
     margin: 0;
   }
 
-  .input::before,
-  li::before {
-    content: "#";
-    position: absolute;
-    left: -2ch;
-    top: 0;
-    color: rgb(249, 115, 91);
+  .console {
+    min-width: 600px;
+    height: 100vh;
+    background-color: rgb(52, 48, 48);
+    padding: 1rem 1rem 1rem 1.5rem;
+    font-size: 1.2rem;
+    color: white;
   }
 
-  input:focus {
-    outline: rgb(52, 48, 48);
+  .input-wrapper {
+    display: flex;
+  }
+
+  .input-wrapper::before {
+    content: "✨";
+    margin-right: 0.7em;
   }
 </style>
