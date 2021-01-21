@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte"
   import { evaluateJS } from "./utils.js"
   import Console from "./Console.svelte"
   import Canvas from "./Canvas.svelte"
@@ -33,6 +34,28 @@
 
   worker.addEventListener("error", (event) => {
     console.warn(`Iskra internal error: ${event.message}`)
+  })
+
+  onMount(() => {
+    /*     document.documentElement.setAttribute(
+      "data-theme",
+      storedTheme || (darkQuery.matches ? "dark" : "light")
+    );
+
+    setModeTo(storedTheme);
+
+    darkQuery.addListener((e) => {
+      setModeTo(e.matches ? "dark" : "light");
+    });
+
+    const setPreferredTheme = () => {
+      document.documentElement.setAttribute("data-theme", $mode);
+      try {
+        localStorage.setItem("theme", $mode);
+      } catch (e) {}
+    };
+
+    mode.subscribe(setPreferredTheme); */
   })
 </script>
 
