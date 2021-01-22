@@ -2,8 +2,8 @@
   import { onMount, createEventDispatcher, onDestroy } from "svelte"
   import { state } from "./stores/input.js"
   import Autocomplete from "./Autocomplete.svelte"
-  import CorrectSVG from "./CorrectSVG.svelte"
-  import SparkSVG from "./SparkSVG.svelte"
+  import CorrectSVG from "./svg/CorrectSVG.svelte"
+  import SparkSVG from "./svg/SparkSVG.svelte"
 
   let history: Array<string> = []
   let command = ""

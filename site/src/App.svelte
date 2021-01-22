@@ -1,11 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte"
   import { evaluateJS } from "./utils.js"
+  import { clickOutside } from "./actions.js"
   import Console from "./Console.svelte"
   import Canvas from "./Canvas.svelte"
-  import CogSvg from "./CogSVG.svelte"
-  import HelpSvg from "./HelpSVG.svelte"
-  import CameraSvg from "./CameraSVG.svelte"
+  import CogSvg from "./svg/CogSVG.svelte"
+  import HelpSvg from "./svg/HelpSVG.svelte"
+  import CameraSvg from "./svg/CameraSVG.svelte"
+  import { quintOut } from "svelte/easing"
+  import { fly } from "svelte/transition"
 
   let ctx: CanvasRenderingContext2D
   let resetCanvas: () => void
@@ -13,6 +16,29 @@
     ctx: CanvasRenderingContext2D,
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) => void
+
+  const menuFlyIn = {
+    duration: 200,
+    x: -400,
+    easing: quintOut
+  }
+
+  const menuFlyOut = {
+    duration: 200,
+    x: -100,
+    easing: quintOut
+  }
+
+  let showSettings = false
+  let showHelp = false
+
+  function toggleSettings() {
+    showSettings = !showSettings
+  }
+
+  function toggleHelp() {
+    showHelp = !showHelp
+  }
 
   const worker = new Worker("./worker.js")
 
@@ -65,14 +91,33 @@
 <div class="container">
   <div class="canvas-wrapper">
     <div class="settings">
-      <div class="settings__icon">
-        <CogSvg />
-      </div>
-      <div class="settings__icon">
-        <HelpSvg />
-      </div>
-      <div class="settings__icon">
-        <CameraSvg />
+      {#if showSettings}
+        <div
+          class="settings__menu"
+          use:clickOutside={showSettings}
+          on:clickOutside={() => {
+            console.log("clicked outside")
+            showSettings = false
+          }}
+          in:fly={menuFlyIn}
+          out:fly={menuFlyOut}
+        ><div>Menu item</div></div>
+      {/if}
+      {#if showHelp}
+        <div class="settings__menu" in:fly={menuFlyIn} out:fly={menuFlyOut}>
+          <div>HELP HELP</div>
+        </div>
+      {/if}
+      <div class="settings__controls">
+        <div on:click={toggleSettings} class="settings__icon">
+          <CogSvg />
+        </div>
+        <div on:click={toggleHelp} class="settings__icon">
+          <HelpSvg />
+        </div>
+        <div class="settings__icon">
+          <CameraSvg />
+        </div>
       </div>
     </div>
     <Canvas bind:prepareCanvasThen bind:resetCanvas bind:ctx />
@@ -99,9 +144,19 @@
   .settings {
     position: absolute;
     display: flex;
+    align-items: flex-start;
+  }
+
+  .settings__menu {
+    background-color: hsl(0, 0%, 11%);
+    min-width: 300px;
+    height: 100vh;
+    padding: 0.4em;
+  }
+
+  .settings__controls {
+    display: flex;
     padding: 0.2em;
-    top: 0;
-    left: 0;
     transform: translate(0.4em, 0.4em);
     background-color: hsl(0, 0%, 11%);
     color: hsl(0, 0%, 30%);
@@ -109,7 +164,7 @@
     border-radius: 0.4em;
   }
 
-  .settings:hover {
+  .settings__controls:hover {
     filter: brightness(1);
     color: hsl(0, 0%, 50%);
   }
@@ -119,7 +174,7 @@
     cursor: pointer;
   }
 
-  .settings > .settings__icon + .settings__icon {
+  .settings__controls > .settings__icon + .settings__icon {
     margin-left: 0.5em;
   }
 
