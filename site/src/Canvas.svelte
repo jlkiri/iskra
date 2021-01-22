@@ -42,6 +42,7 @@
 
   function setCanvasSize() {
     const parentRect = (canvas.parentNode as HTMLDivElement).getBoundingClientRect()
+    console.log(parentRect.width, parentRect.height)
     canvas.width = parentRect.width + 1
     canvas.height = parentRect.height + 1
   }

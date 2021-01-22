@@ -3,6 +3,9 @@
   import { evaluateJS } from "./utils.js"
   import Console from "./Console.svelte"
   import Canvas from "./Canvas.svelte"
+  import CogSvg from "./CogSVG.svelte"
+  import HelpSvg from "./HelpSVG.svelte"
+  import CameraSvg from "./CameraSVG.svelte"
 
   let ctx: CanvasRenderingContext2D
   let resetCanvas: () => void
@@ -61,6 +64,17 @@
 
 <div class="container">
   <div class="canvas-wrapper">
+    <div class="settings">
+      <div class="settings__icon">
+        <CogSvg />
+      </div>
+      <div class="settings__icon">
+        <HelpSvg />
+      </div>
+      <div class="settings__icon">
+        <CameraSvg />
+      </div>
+    </div>
     <Canvas bind:prepareCanvasThen bind:resetCanvas bind:ctx />
   </div>
   <Console on:command={handleCommand} />
@@ -72,8 +86,41 @@
   }
 
   .canvas-wrapper {
+    position: relative;
     height: 100vh;
     flex: 1;
+  }
+
+  .settings__icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .settings {
+    position: absolute;
+    display: flex;
+    padding: 0.2em;
+    top: 0;
+    left: 0;
+    transform: translate(0.4em, 0.4em);
+    background-color: hsl(0, 0%, 11%);
+    color: hsl(0, 0%, 30%);
+    filter: brightness(0.5);
+    border-radius: 0.4em;
+  }
+
+  .settings:hover {
+    filter: brightness(1);
+    color: hsl(0, 0%, 50%);
+  }
+
+  .settings__icon:hover {
+    color: hsl(0, 0%, 80%);
+    cursor: pointer;
+  }
+
+  .settings > .settings__icon + .settings__icon {
+    margin-left: 0.5em;
   }
 
   :global(body) {
