@@ -11,6 +11,7 @@
   import { quintOut } from "svelte/easing"
   import { fly } from "svelte/transition"
   import { theme } from "./stores/theme.js"
+  import { error } from "./stores/error.js"
 
   let ctx: CanvasRenderingContext2D
   let canvas: HTMLCanvasElement
@@ -69,9 +70,12 @@
 
   worker.addEventListener("message", async (event) => {
     if (event.data.error) {
+      $error = event.data.error
       resetCanvas()
       return
     }
+
+    $error = null
 
     const render = await evaluateJS(event.data.compiled)
     prepareCanvasThen(ctx, render)

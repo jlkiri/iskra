@@ -13,13 +13,13 @@ function return_iter(value: SparkToken) {
 }
 
 export class Scanner {
-  private source: string
+  private _source: string
   private current: number
   private start: number
   private reserved: Map<string, TokenType>
 
   constructor(input: string) {
-    this.source = input.replace(/\s/g, "")
+    this._source = input.replace(/\s/g, "")
     this.current = 0
     this.start = 0
 
@@ -28,6 +28,10 @@ export class Scanner {
     this.reserved.set("repeat", Token.REPEAT)
     this.reserved.set("forward", Token.FORWARD)
     this.reserved.set("turn", Token.TURN)
+  }
+
+  source() {
+    return this._source
   }
 
   next() {
@@ -84,11 +88,11 @@ export class Scanner {
   }
 
   current_slice() {
-    return this.source.slice(this.start, this.current)
+    return this.source().slice(this.start, this.current)
   }
 
   peek() {
-    return this.source.charAt(this.current)
+    return this.source().charAt(this.current)
   }
 
   keyword() {
@@ -117,12 +121,12 @@ export class Scanner {
   }
 
   isAtEnd() {
-    return this.current >= this.source.length
+    return this.current >= this.source().length
   }
 
   advance() {
     this.current += 1
-    return this.source.charAt(this.current - 1)
+    return this.source().charAt(this.current - 1)
   }
 
   [Symbol.iterator]() {

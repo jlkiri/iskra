@@ -1,10 +1,7 @@
 export function clickOutside(node: HTMLElement, initialOpen: boolean) {
   let isOpen = initialOpen
 
-  console.log("initialOpen", initialOpen)
-
   function handleOutsideClick({ target }: MouseEvent) {
-    console.log("isOpen", isOpen)
     if (node && !node.contains(target as Node) && isOpen) {
       node.dispatchEvent(new CustomEvent("clickOutside"))
     }
@@ -18,6 +15,6 @@ export function clickOutside(node: HTMLElement, initialOpen: boolean) {
     },
     destroy() {
       window.removeEventListener("click", handleOutsideClick)
-    }
+    },
   }
 }

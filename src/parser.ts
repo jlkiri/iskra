@@ -95,7 +95,17 @@ export class Parser {
   }
 
   parse() {
-    return this.command()
+    if (!this.check(Token.ERROR)) {
+      return this.command()
+    }
+
+    this.error()
+  }
+
+  error() {
+    const { start, end, value } = this.peek()
+    const detail = ``.padStart(start) + `^`.repeat(end - start)
+    throw new ParseError(`${detail}\n${value}`)
   }
 
   next() {

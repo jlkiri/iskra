@@ -25,11 +25,11 @@
     offset = input.selectionStart
   }
 
-  $: console.log(state), value
+  /* $: console.log(state), value
   $: console.log(value), value
   $: console.log(currentWordOffset), value
   $: console.log(currentWord), value
-  $: console.log(selectedIdx), value
+  $: console.log(selectedIdx), value */
 
   function handleKeydown(event) {
     if ($state == "selected" || $state == "idle") {

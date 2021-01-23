@@ -9,6 +9,6 @@ self.addEventListener("message", (event: MessageEvent<string>) => {
     const compiled = compiler.compile_iter(parser)
     self.postMessage({ error: null, compiled })
   } catch (e) {
-    self.postMessage({ error: e, compiled: null })
+    self.postMessage({ error: e.message, compiled: null })
   }
 })

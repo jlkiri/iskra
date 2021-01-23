@@ -4,6 +4,7 @@
   import Autocomplete from "./Autocomplete.svelte"
   import CorrectSVG from "./svg/CorrectSVG.svelte"
   import SparkSVG from "./svg/SparkSVG.svelte"
+  import { error } from "./stores/error.js"
 
   let history: Array<string> = []
   let command = ""
@@ -39,7 +40,9 @@
   <ul>
     {#each history as com}
       <li class="console-line">
-        <div class="console-line__icon"><CorrectSVG /></div>
+        <div class="console-line__icon">
+          {#if $error}x{:else}<CorrectSVG />{/if}
+        </div>
         {com}
       </li>
     {/each}
