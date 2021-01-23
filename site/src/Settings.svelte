@@ -27,5 +27,6 @@
     padding: 0.3em;
     border-radius: 0.4em;
     border: 3px solid var(--primary);
+    font-size: 1.1rem;
   }
 </style>

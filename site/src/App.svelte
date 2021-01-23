@@ -7,6 +7,7 @@
   import CogSvg from "./svg/CogSVG.svelte"
   import HelpSvg from "./svg/HelpSVG.svelte"
   import CameraSvg from "./svg/CameraSVG.svelte"
+  import SyntaxDescription from "./SyntaxDescription.svelte"
   import { quintOut } from "svelte/easing"
   import { fly } from "svelte/transition"
   import { theme } from "./stores/theme.js"
@@ -87,7 +88,7 @@
           {/if}
           {#if showHelp}
             <div class="settings__menu" in:fly={menuFlyIn} out:fly={menuFlyOut}>
-              <div>HELP HELP</div>
+              <SyntaxDescription />
             </div>
           {/if}
         </div>
@@ -172,7 +173,7 @@
 
   :global(body) {
     font-family: "Source Code Pro", monospace;
-    font-size: 24px;
+    font-size: 1.4rem;
     color: var(--primary);
   }
 
