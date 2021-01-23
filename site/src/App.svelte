@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from "svelte"
+  import { beforeUpdate } from "svelte"
   import { evaluateJS } from "./utils.js"
-  import { clickOutside } from "./actions.js"
+  import Settings from "./Settings.svelte"
   import Console from "./Console.svelte"
   import Canvas from "./Canvas.svelte"
   import CogSvg from "./svg/CogSVG.svelte"
@@ -9,6 +9,7 @@
   import CameraSvg from "./svg/CameraSVG.svelte"
   import { quintOut } from "svelte/easing"
   import { fly } from "svelte/transition"
+  import { theme } from "./stores/theme.js"
 
   let ctx: CanvasRenderingContext2D
   let resetCanvas: () => void
@@ -31,6 +32,8 @@
 
   let showSettings = false
   let showHelp = false
+
+  $: showMenuContainer = showSettings || showHelp
 
   function toggleSettings() {
     showSettings = !showSettings
@@ -67,37 +70,19 @@
     console.warn(`Iskra internal error: ${event.message}`)
   })
 
-  onMount(() => {
-    /*     document.documentElement.setAttribute(
-      "data-theme",
-      storedTheme || (darkQuery.matches ? "dark" : "light")
-    );
-
-    setModeTo(storedTheme);
-
-    darkQuery.addListener((e) => {
-      setModeTo(e.matches ? "dark" : "light");
-    });
-
-    const setPreferredTheme = () => {
-      document.documentElement.setAttribute("data-theme", $mode);
-      try {
-        localStorage.setItem("theme", $mode);
-      } catch (e) {}
-    };
-
-    mode.subscribe(setPreferredTheme); */
+  beforeUpdate(() => {
+    document.documentElement.setAttribute("data-theme", $theme)
   })
 </script>
 
 <div class="container">
   <div class="canvas-wrapper">
     <div class="settings">
-      {#if showSettings || showHelp}
+      {#if showMenuContainer}
         <div class="settings__menu-container">
           {#if showSettings}
             <div class="settings__menu" in:fly={menuFlyIn} out:fly={menuFlyOut}>
-              <div>Menu item</div>
+              <Settings />
             </div>
           {/if}
           {#if showHelp}
@@ -147,35 +132,37 @@
 
   .settings__menu-container {
     position: relative;
-    min-width: calc(300px - 0.8em);
-    padding: 0.4em;
+    width: calc(300px + 0.8em);
   }
 
   .settings__menu {
     position: absolute;
-    min-width: 300px;
+    width: 300px;
+    padding: 0.4em;
     top: 0;
     left: 0;
-    background-color: hsl(0, 0%, 11%);
+    background-color: var(--tertiary);
     height: 100vh;
   }
 
   .settings__controls {
     padding: 0.2em;
     transform: translate(0.4em, 0.4em);
-    background-color: hsl(0, 0%, 11%);
-    color: hsl(0, 0%, 30%);
+    background-color: var(--secondary);
     filter: brightness(0.5);
     border-radius: 0.4em;
   }
 
   .settings__controls:hover {
     filter: brightness(1);
-    color: hsl(0, 0%, 50%);
+  }
+
+  .settings__icon {
+    filter: brightness(0.5);
   }
 
   .settings__icon:hover {
-    color: hsl(0, 0%, 80%);
+    filter: brightness(1);
     cursor: pointer;
   }
 
@@ -186,5 +173,27 @@
   :global(body) {
     font-family: "Source Code Pro", monospace;
     font-size: 24px;
+    color: var(--primary);
+  }
+
+  :global([data-theme="dark"]) {
+    --primary: hsl(0, 0%, 93%);
+    --secondary: hsl(216, 18%, 16%);
+    --tertiary: hsl(210, 32%, 28%);
+    --accent: hsl(26, 84%, 67%);
+  }
+
+  :global([data-theme="light"]) {
+    --primary: hsl(203, 41%, 32%);
+    --secondary: hsl(0, 0%, 98%);
+    --tertiary: hsl(39, 28%, 82%);
+    --accent: hsl(16, 83%, 64%);
+  }
+
+  :global([data-theme="colorful"]) {
+    --primary: hsl(43, 60%, 76%);
+    --secondary: hsl(288, 34%, 27%);
+    --tertiary: hsl(346, 47%, 48%);
+    --accent: hsl(7, 95%, 70%);
   }
 </style>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte"
   import { cubicOut } from "svelte/easing"
+  import { theme, getThemeColor } from "./stores/theme.js"
   import { debounce } from "./utils.js"
 
   const speed = 1600
@@ -10,6 +11,21 @@
   let canvas: HTMLCanvasElement
 
   let rafHandles: Array<number> = []
+
+  $: if (canvas) {
+    setCanvasColors($theme)
+  }
+
+  function setCanvasColors(currentTheme?: any) {
+    ctx.fillStyle = getThemeColor("secondary")
+    ctx.strokeStyle = getThemeColor("primary")
+
+    ctx.resetTransform()
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.translate(canvas.width / 2, canvas.height / 2)
+
+    ctx.lineWidth = 3
+  }
 
   function resetCanvas() {
     for (const handle of rafHandles) {
@@ -21,11 +37,7 @@
     canvas.width = 0
 
     setCanvasSize()
-
-    ctx.resetTransform()
-    ctx.fillStyle = "black"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.translate(canvas.width / 2, canvas.height / 2)
+    setCanvasColors()
   }
 
   function prepareCanvasThen(
@@ -34,15 +46,11 @@
   ) {
     resetCanvas()
 
-    ctx.strokeStyle = "white"
-    ctx.lineWidth = 3
-
     fn(ctx, drawLine)
   }
 
   function setCanvasSize() {
     const parentRect = (canvas.parentNode as HTMLDivElement).getBoundingClientRect()
-    console.log(parentRect.width, parentRect.height)
     canvas.width = parentRect.width + 1
     canvas.height = parentRect.height + 1
   }
@@ -89,6 +97,7 @@
     ctx = canvas.getContext("2d", { alpha: false })
 
     setCanvasSize()
+    console.log("on mount reset")
     resetCanvas()
 
     window.addEventListener("resize", handleWindowResize)

@@ -1,10 +1,11 @@
 import { writable } from "svelte/store"
 
-export type Theme = "light" | "dark" | "fun"
+export type Theme = "light" | "dark" | "colorful"
 
-export const theme = writable("fun")
+export const theme = writable("colorful")
 
-export const setTheme = (th: Theme) => {
-  theme.set(th)
-  document.documentElement.setAttribute("data-theme", th)
+export function getThemeColor(prop: string) {
+  return getComputedStyle(document.documentElement).getPropertyValue(
+    `--${prop}`
+  )
 }

@@ -56,14 +56,14 @@
 <style>
   input {
     width: 100%;
-    background-color: rgb(52, 48, 48);
+    background-color: var(--tertiary);
     border: none;
     color: inherit;
     padding: 0;
   }
 
   input:focus {
-    outline: rgb(52, 48, 48);
+    outline: var(--tertiary);
   }
 
   li {
@@ -80,10 +80,10 @@
   .console {
     min-width: 600px;
     height: 100vh;
-    background-color: rgb(52, 48, 48);
+    background-color: var(--tertiary);
     padding: 0.8rem;
     font-size: 1.2rem;
-    color: white;
+    color: var(--primary);
   }
 
   .console-line .console-line__icon {
