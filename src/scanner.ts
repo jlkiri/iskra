@@ -4,17 +4,12 @@ import type { TokenType } from "./token.js"
 export type SparkToken = {
   type: TokenType
   value: any
+  start: number
+  end: number
 }
 
 function return_iter(value: SparkToken) {
   return { done: false, value }
-}
-
-function create_token(type: TokenType, value?: any) {
-  return {
-    type,
-    value
-  }
 }
 
 export class Scanner {
@@ -39,7 +34,10 @@ export class Scanner {
     this.start = this.current
 
     if (this.isAtEnd()) {
-      return { done: true, value: create_token(Token.EOF) }
+      return {
+        done: true,
+        value: this.create_token(Token.EOF),
+      }
     }
 
     const char = this.advance()
@@ -54,12 +52,23 @@ export class Scanner {
 
     switch (char) {
       case "(":
-        return return_iter(create_token(Token.OB))
+        return return_iter(this.create_token(Token.OB))
       case ")":
-        return return_iter(create_token(Token.CB))
+        return return_iter(this.create_token(Token.CB))
     }
 
-    return return_iter(create_token(Token.ERROR, `Unexpected token: ${char}.`))
+    return return_iter(
+      this.create_token(Token.ERROR, `Unexpected token: ${char}.`)
+    )
+  }
+
+  create_token(type: TokenType, value?: any): SparkToken {
+    return {
+      type,
+      value,
+      start: this.start,
+      end: this.current,
+    }
   }
 
   is_alpha(char: string) {
@@ -90,10 +99,10 @@ export class Scanner {
     const slice = this.current_slice()
 
     if (this.is_reserved(slice)) {
-      return create_token(this.reserved.get(slice)!, slice)
+      return this.create_token(this.reserved.get(slice)!, slice)
     }
 
-    return create_token(
+    return this.create_token(
       Token.ERROR,
       `Unexpected token: ${this.current_slice()}`
     )
@@ -104,7 +113,7 @@ export class Scanner {
       this.advance()
     }
 
-    return create_token(Token.LITERAL, this.current_slice())
+    return this.create_token(Token.LITERAL, this.current_slice())
   }
 
   isAtEnd() {
