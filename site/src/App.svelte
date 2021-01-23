@@ -13,6 +13,7 @@
   import { theme } from "./stores/theme.js"
 
   let ctx: CanvasRenderingContext2D
+  let canvas: HTMLCanvasElement
   let resetCanvas: () => void
   let prepareCanvasThen: (
     ctx: CanvasRenderingContext2D,
@@ -44,6 +45,15 @@
   function toggleHelp() {
     showHelp = !showHelp
     showSettings = false
+  }
+
+  function saveCanvas() {
+    const link = document.createElement("a")
+    link.setAttribute("href", canvas.toDataURL())
+    link.setAttribute("download", "pixelart.png")
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
   }
 
   const worker = new Worker("./worker.js")
@@ -100,12 +110,12 @@
         <div on:click={toggleHelp} class="settings__icon">
           <HelpSvg />
         </div>
-        <div class="settings__icon">
+        <div class="settings__icon" on:click={saveCanvas}>
           <CameraSvg />
         </div>
       </div>
     </div>
-    <Canvas bind:prepareCanvasThen bind:resetCanvas bind:ctx />
+    <Canvas bind:prepareCanvasThen bind:resetCanvas bind:canvas bind:ctx />
   </div>
   <Console on:command={handleCommand} />
 </div>

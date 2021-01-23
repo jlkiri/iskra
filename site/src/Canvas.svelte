@@ -8,7 +8,7 @@
 
   export let ctx: CanvasRenderingContext2D
   export { resetCanvas, prepareCanvasThen }
-  let canvas: HTMLCanvasElement
+  export let canvas: HTMLCanvasElement
 
   let rafHandles: Array<number> = []
 
@@ -97,7 +97,6 @@
     ctx = canvas.getContext("2d", { alpha: false })
 
     setCanvasSize()
-    console.log("on mount reset")
     resetCanvas()
 
     window.addEventListener("resize", handleWindowResize)
