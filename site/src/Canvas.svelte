@@ -12,19 +12,19 @@
 
   let rafHandles: Array<number> = []
 
-  $: if (canvas) {
-    setCanvasColors($theme)
-  }
+  $: setCanvasColors($theme)
 
   function setCanvasColors(currentTheme?: any) {
-    ctx.fillStyle = getThemeColor("secondary")
-    ctx.strokeStyle = getThemeColor("primary")
+    if (canvas) {
+      ctx.fillStyle = getThemeColor("secondary")
+      ctx.strokeStyle = getThemeColor("primary")
 
-    ctx.resetTransform()
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.translate(canvas.width / 2, canvas.height / 2)
+      ctx.resetTransform()
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.translate(canvas.width / 2, canvas.height / 2)
 
-    ctx.lineWidth = 3
+      ctx.lineWidth = 3
+    }
   }
 
   function resetCanvas() {
