@@ -20,13 +20,13 @@
   const menuFlyIn = {
     duration: 200,
     x: -400,
-    easing: quintOut
+    easing: quintOut,
   }
 
   const menuFlyOut = {
     duration: 200,
     x: -100,
-    easing: quintOut
+    easing: quintOut,
   }
 
   let showSettings = false
@@ -34,10 +34,12 @@
 
   function toggleSettings() {
     showSettings = !showSettings
+    showHelp = false
   }
 
   function toggleHelp() {
     showHelp = !showHelp
+    showSettings = false
   }
 
   const worker = new Worker("./worker.js")
@@ -91,21 +93,18 @@
 <div class="container">
   <div class="canvas-wrapper">
     <div class="settings">
-      {#if showSettings}
-        <div
-          class="settings__menu"
-          use:clickOutside={showSettings}
-          on:clickOutside={() => {
-            console.log("clicked outside")
-            showSettings = false
-          }}
-          in:fly={menuFlyIn}
-          out:fly={menuFlyOut}
-        ><div>Menu item</div></div>
-      {/if}
-      {#if showHelp}
-        <div class="settings__menu" in:fly={menuFlyIn} out:fly={menuFlyOut}>
-          <div>HELP HELP</div>
+      {#if showSettings || showHelp}
+        <div class="settings__menu-container">
+          {#if showSettings}
+            <div class="settings__menu" in:fly={menuFlyIn} out:fly={menuFlyOut}>
+              <div>Menu item</div>
+            </div>
+          {/if}
+          {#if showHelp}
+            <div class="settings__menu" in:fly={menuFlyIn} out:fly={menuFlyOut}>
+              <div>HELP HELP</div>
+            </div>
+          {/if}
         </div>
       {/if}
       <div class="settings__controls">
@@ -144,18 +143,24 @@
   .settings {
     position: absolute;
     display: flex;
-    align-items: flex-start;
   }
 
-  .settings__menu {
-    background-color: hsl(0, 0%, 11%);
-    min-width: 300px;
-    height: 100vh;
+  .settings__menu-container {
+    position: relative;
+    min-width: calc(300px - 0.8em);
     padding: 0.4em;
   }
 
+  .settings__menu {
+    position: absolute;
+    min-width: 300px;
+    top: 0;
+    left: 0;
+    background-color: hsl(0, 0%, 11%);
+    height: 100vh;
+  }
+
   .settings__controls {
-    display: flex;
     padding: 0.2em;
     transform: translate(0.4em, 0.4em);
     background-color: hsl(0, 0%, 11%);
@@ -175,7 +180,7 @@
   }
 
   .settings__controls > .settings__icon + .settings__icon {
-    margin-left: 0.5em;
+    margin-top: 0.5em;
   }
 
   :global(body) {
