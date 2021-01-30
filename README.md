@@ -1,6 +1,11 @@
-# logo
+# Iskra language
 
-command := repeat '(' motion ')' | motion
-repeat := 'repeat' literal
-motion := 'right' | 'left' | 'forward' literal
-literal := INT
+## Run
+
+## Grammar
+
+```
+command := repeat | motion
+repeat := 'repeat' INT '(' command ')'
+motion := ('turn' | 'forward') INT
+```
