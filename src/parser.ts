@@ -49,7 +49,7 @@ export class Parser {
     throw new ParseError(
       `Expected a literal${
         this.previous ? ` after '${this.previous!.value}'` : ""
-      }, got '${this.stringify_current()}'`
+      }, got '${this.stringify_current()}'.`
     )
   }
 

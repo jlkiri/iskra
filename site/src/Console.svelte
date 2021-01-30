@@ -5,8 +5,8 @@
   import CorrectSVG from "./svg/CorrectSVG.svelte"
   import SparkSVG from "./svg/SparkSVG.svelte"
   import Error from "./Error.svelte"
-  import { error } from "./stores/error.js"
   import { history } from "./stores/history.js"
+  import { autoscroll } from "./autoscroll.js"
 
   let command = ""
   let input: HTMLInputElement
@@ -36,7 +36,7 @@
   })
 </script>
 
-<div class="console">
+<div class="console" use:autoscroll>
   <ul>
     {#each $history as entry}
       <li class="console-line">
@@ -91,6 +91,7 @@
     padding: 0.8rem;
     font-size: 1.2rem;
     color: var(--primary);
+    overflow-y: auto;
   }
 
   .console-line .console-line__icon {
