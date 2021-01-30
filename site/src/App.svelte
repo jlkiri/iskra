@@ -13,6 +13,8 @@
   import { theme } from "./stores/theme.js"
   import { error } from "./stores/error.js"
   import { history } from "./stores/history.js"
+  import { pannable } from "./actions.js"
+  import { consoleWidth } from "./stores/console.js"
 
   let ctx: CanvasRenderingContext2D
   let canvas: HTMLCanvasElement
@@ -22,10 +24,12 @@
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) => void
 
-  let resizerOffset = 0
+  // $: resizerOffset = window.innerWidth - $consoleWidth
+
+  let resizerDx = 0
 
   onMount(() => {
-    resizerOffset = canvas.width
+    //resizerOffset = canvas.width
   })
 
   const menuFlyIn = {
@@ -53,6 +57,20 @@
   function toggleHelp() {
     showHelp = !showHelp
     showSettings = false
+  }
+
+  function handlePanMove(event) {
+    resizerDx += event.detail.dx
+  }
+
+  function handlePanEnd(event) {
+    console.log("$consoleWidth", $consoleWidth)
+    console.log("resizerDx", resizerDx)
+    $consoleWidth =
+      resizerDx > 0 ? $consoleWidth - resizerDx : $consoleWidth - resizerDx
+    console.log("$consoleWidth", $consoleWidth)
+    resizerDx = 0
+    resetCanvas()
   }
 
   function saveCanvas() {
@@ -136,16 +154,24 @@
 
   <Console on:command={handleCommand} />
 
-  <div class="resizer" style="--offset: {resizerOffset - 15}px" />
+  <div
+    class="resizer"
+    use:pannable
+    on:panmove={handlePanMove}
+    on:panend={handlePanEnd}
+    style="--offset: {$consoleWidth + 18}px; --dx: {resizerDx}px"
+  />
 </div>
 
 <style>
   .resizer {
     position: absolute;
     top: 0;
-    left: var(--offset);
+    right: var(--offset);
+    transform: translateX(var(--dx));
     height: 100%;
     width: 15px;
+    z-index: 1;
   }
 
   .resizer:hover {

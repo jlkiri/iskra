@@ -7,6 +7,7 @@
   import Error from "./Error.svelte"
   import { history } from "./stores/history.js"
   import { autoscroll } from "./actions.js"
+  import { consoleWidth } from "./stores/console.js"
 
   let command = ""
   let input: HTMLInputElement
@@ -36,7 +37,7 @@
   })
 </script>
 
-<div class="console" use:autoscroll>
+<div class="console" style="--console-width: {$consoleWidth}px;" use:autoscroll>
   <ul>
     {#each $history as entry}
       <li class="console-line">
@@ -59,7 +60,6 @@
   </div>
   <Autocomplete bind:value={command} {input} />
   <div style="height: 150px" />
-  <div class="resizer" />
 </div>
 
 <style>
@@ -88,7 +88,7 @@
 
   .console {
     position: relative;
-    min-width: 600px;
+    flex-basis: var(--console-width);
     background-color: var(--tertiary);
     padding: 0.8rem;
     font-size: 1.2rem;
