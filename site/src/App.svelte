@@ -12,6 +12,7 @@
   import { fly } from "svelte/transition"
   import { theme } from "./stores/theme.js"
   import { error } from "./stores/error.js"
+  import { history } from "./stores/history.js"
 
   let ctx: CanvasRenderingContext2D
   let canvas: HTMLCanvasElement
@@ -71,11 +72,16 @@
   worker.addEventListener("message", async (event) => {
     if (event.data.error) {
       $error = event.data.error
+      $history = [
+        ...$history,
+        { error: event.data.error, command: event.data.source },
+      ]
       resetCanvas()
       return
     }
 
     $error = null
+    $history = [...$history, { error: null, command: event.data.source }]
 
     const render = await evaluateJS(event.data.compiled)
     prepareCanvasThen(ctx, render)

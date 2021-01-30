@@ -7,8 +7,8 @@ self.addEventListener("message", (event: MessageEvent<string>) => {
 
   try {
     const compiled = compiler.compile_iter(parser)
-    self.postMessage({ error: null, compiled })
+    self.postMessage({ error: null, compiled, source: event.data })
   } catch (e) {
-    self.postMessage({ error: e.message, compiled: null })
+    self.postMessage({ error: e.message, compiled: null, source: event.data })
   }
 })

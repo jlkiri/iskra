@@ -108,7 +108,7 @@ export class Scanner {
 
     return this.create_token(
       Token.ERROR,
-      `Unexpected token: ${this.current_slice()}`
+      `Unexpected keyword: ${this.current_slice()}.`
     )
   }
 

@@ -21,15 +21,24 @@ export class Parser {
     const times = this.literal()
     const movements: Array<Motion | Expr.Repeat> = []
 
-    this.consume(Token.OB, `Expected a '(' ${JSON.stringify(this.current)}`)
+    this.consume(Token.OB, `Expected a '(', got '${this.stringify_current()}'.`)
 
     while (!this.check(Token.CB)) {
       movements.push(this.command())
     }
 
-    this.consume(Token.CB, `Expected a ')' `)
+    this.consume(Token.CB, `Expected a ')', got '${this.stringify_current()}'.`)
 
     return new Expr.Repeat(times, movements)
+  }
+
+  stringify_current() {
+    if (this.check(Token.ERROR)) {
+      const current = this.peek()
+      return this.scanner.source().slice(current.start, current.end)
+    }
+
+    return this.peek().value
   }
 
   literal() {
@@ -37,7 +46,11 @@ export class Parser {
       return new Expr.Literal(this.advance())
     }
 
-    throw new Error(`Expected literal: ${JSON.stringify(this.current)}`)
+    throw new ParseError(
+      `Expected a literal${
+        this.previous ? ` after '${this.previous!.value}'` : ""
+      }, got '${this.stringify_current()}'`
+    )
   }
 
   motion() {
@@ -69,7 +82,7 @@ export class Parser {
   consume(type: TokenType, msg: string) {
     if (this.check(type)) return this.advance()
 
-    throw new Error(msg)
+    throw new ParseError(msg)
   }
 
   check(type: TokenType) {
@@ -103,9 +116,8 @@ export class Parser {
   }
 
   error() {
-    const { start, end, value } = this.peek()
-    const detail = ``.padStart(start) + `^`.repeat(end - start)
-    throw new ParseError(`${detail}\n${value}`)
+    const { value } = this.peek()
+    throw new ParseError(value)
   }
 
   next() {

@@ -4,9 +4,10 @@
   import Autocomplete from "./Autocomplete.svelte"
   import CorrectSVG from "./svg/CorrectSVG.svelte"
   import SparkSVG from "./svg/SparkSVG.svelte"
+  import Error from "./Error.svelte"
   import { error } from "./stores/error.js"
+  import { history } from "./stores/history.js"
 
-  let history: Array<string> = []
   let command = ""
   let input: HTMLInputElement
 
@@ -17,13 +18,12 @@
       if (event.key == "Enter") {
         dispatch("command", { command })
 
-        history = [...history, command]
         command = ""
       }
     }
 
     if (event.key === "ArrowUp" && !command) {
-      command = history[history.length - 1]
+      command = $history[$history.length - 1].command
     }
   }
 
@@ -38,12 +38,16 @@
 
 <div class="console">
   <ul>
-    {#each history as com}
+    {#each $history as entry}
       <li class="console-line">
         <div class="console-line__icon">
-          {#if $error}x{:else}<CorrectSVG />{/if}
+          {#if entry.error}<span style="font-size: 0.7em">❌</span>
+          {:else}
+            <CorrectSVG />
+          {/if}
         </div>
-        {com}
+        {entry.command}
+        {#if entry.error}<Error message={entry.error} />{/if}
       </li>
     {/each}
   </ul>
