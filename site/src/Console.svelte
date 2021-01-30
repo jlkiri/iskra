@@ -56,7 +56,12 @@
     <div class="input-wrapper__icon">
       <SparkSVG />
     </div>
-    <input type="text" bind:this={input} bind:value={command} />
+    <input
+      type="text"
+      bind:this={input}
+      bind:value={command}
+      placeholder="Enter a command"
+    />
   </div>
   <Autocomplete bind:value={command} {input} />
   <div style="height: 150px" />
@@ -69,6 +74,11 @@
     border: none;
     color: inherit;
     padding: 0;
+  }
+
+  ::placeholder {
+    color: var(--primary);
+    opacity: 0.5;
   }
 
   input:focus {

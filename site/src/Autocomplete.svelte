@@ -25,12 +25,6 @@
     offset = input.selectionStart
   }
 
-  /* $: console.log(state), value
-  $: console.log(value), value
-  $: console.log(currentWordOffset), value
-  $: console.log(currentWord), value
-  $: console.log(selectedIdx), value */
-
   function handleKeydown(event) {
     if ($state == "selected" || $state == "idle") {
       if (event.key == "Enter") {
@@ -107,6 +101,7 @@
     background-color: #00070e;
     color: hsl(195, 69%, 81%);
     max-width: 15ch;
+    margin-left: calc(1em + 1ch);
     padding: 0.2em;
     border-radius: 0 0 2px 2px;
     transition: transform 125ms;

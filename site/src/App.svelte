@@ -170,11 +170,12 @@
     height: 100%;
     width: 15px;
     z-index: 1;
+    background-color: black;
+    opacity: 0.1;
   }
 
   .resizer:hover {
     cursor: col-resize;
-    background-color: black;
     opacity: 0.4;
   }
 
@@ -215,10 +216,10 @@
   }
 
   .settings__controls {
-    padding: 0.2em;
+    padding: 0.3em;
     transform: translate(0.4em, 0.4em);
     background-color: var(--secondary);
-    filter: brightness(0.5);
+    filter: brightness(0.8);
     border-radius: 0.4em;
   }
 
@@ -227,7 +228,7 @@
   }
 
   .settings__icon {
-    filter: brightness(0.5);
+    filter: brightness(0.8);
   }
 
   .settings__icon:hover {
