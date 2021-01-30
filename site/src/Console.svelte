@@ -6,7 +6,7 @@
   import SparkSVG from "./svg/SparkSVG.svelte"
   import Error from "./Error.svelte"
   import { history } from "./stores/history.js"
-  import { autoscroll } from "./autoscroll.js"
+  import { autoscroll } from "./actions.js"
 
   let command = ""
   let input: HTMLInputElement
@@ -59,6 +59,7 @@
   </div>
   <Autocomplete bind:value={command} {input} />
   <div style="height: 150px" />
+  <div class="resizer" />
 </div>
 
 <style>
@@ -86,6 +87,7 @@
   }
 
   .console {
+    position: relative;
     min-width: 600px;
     background-color: var(--tertiary);
     padding: 0.8rem;

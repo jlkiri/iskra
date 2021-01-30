@@ -101,12 +101,6 @@
     resetCanvas()
 
     window.addEventListener("resize", handleWindowResize)
-
-    /* const resizeObserver = new ResizeObserver((entries) => {
-      console.log("Size changed")
-    })
-
-    resizeObserver.observe(canvas) */
   })
 
   onDestroy(() => {

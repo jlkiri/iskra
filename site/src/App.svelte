@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { beforeUpdate } from "svelte"
+  import { afterUpdate, beforeUpdate, onMount } from "svelte"
   import { evaluateJS } from "./utils.js"
   import Settings from "./Settings.svelte"
   import Console from "./Console.svelte"
@@ -21,6 +21,12 @@
     ctx: CanvasRenderingContext2D,
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) => void
+
+  let resizerOffset = 0
+
+  onMount(() => {
+    resizerOffset = canvas.width
+  })
 
   const menuFlyIn = {
     duration: 200,
@@ -127,10 +133,27 @@
     </div>
     <Canvas bind:prepareCanvasThen bind:resetCanvas bind:canvas bind:ctx />
   </div>
+
   <Console on:command={handleCommand} />
+
+  <div class="resizer" style="--offset: {resizerOffset - 15}px" />
 </div>
 
 <style>
+  .resizer {
+    position: absolute;
+    top: 0;
+    left: var(--offset);
+    height: 100%;
+    width: 15px;
+  }
+
+  .resizer:hover {
+    cursor: col-resize;
+    background-color: black;
+    opacity: 0.4;
+  }
+
   .container {
     display: flex;
     height: 100%;

@@ -1,20 +1,15 @@
-export function clickOutside(node: HTMLElement, initialOpen: boolean) {
-  let isOpen = initialOpen
+import { afterUpdate } from "svelte"
 
-  function handleOutsideClick({ target }: MouseEvent) {
-    if (node && !node.contains(target as Node) && isOpen) {
-      node.dispatchEvent(new CustomEvent("clickOutside"))
+export function autoscroll(node) {
+  function scroll() {
+    if (node.scrollHeight > node.clientHeight) {
+      node.scrollTo(0, node.scrollHeight - node.clientHeight)
     }
   }
 
-  window.addEventListener("click", handleOutsideClick)
+  scroll()
 
-  return {
-    update(newState) {
-      isOpen = newState
-    },
-    destroy() {
-      window.removeEventListener("click", handleOutsideClick)
-    },
-  }
+  afterUpdate(() => {
+    scroll()
+  })
 }
