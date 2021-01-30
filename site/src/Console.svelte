@@ -58,6 +58,7 @@
     <input type="text" bind:this={input} bind:value={command} />
   </div>
   <Autocomplete bind:value={command} {input} />
+  <div style="height: 150px" />
 </div>
 
 <style>
@@ -86,12 +87,11 @@
 
   .console {
     min-width: 600px;
-    height: 100vh;
     background-color: var(--tertiary);
     padding: 0.8rem;
     font-size: 1.2rem;
     color: var(--primary);
-    overflow-y: auto;
+    overflow: auto;
   }
 
   .console-line .console-line__icon {

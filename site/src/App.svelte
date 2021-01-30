@@ -133,11 +133,12 @@
 <style>
   .container {
     display: flex;
+    height: 100%;
   }
 
   .canvas-wrapper {
     position: relative;
-    height: 100vh;
+    height: 100%;
     flex: 1;
   }
 
