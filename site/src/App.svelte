@@ -64,13 +64,11 @@
   }
 
   function handlePanEnd(event) {
-    console.log("$consoleWidth", $consoleWidth)
-    console.log("resizerDx", resizerDx)
+    resizerDx += event.detail.dx
     $consoleWidth =
       resizerDx > 0 ? $consoleWidth - resizerDx : $consoleWidth - resizerDx
-    console.log("$consoleWidth", $consoleWidth)
     resizerDx = 0
-    resetCanvas()
+    requestAnimationFrame(() => resetCanvas())
   }
 
   function saveCanvas() {
