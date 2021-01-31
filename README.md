@@ -1,6 +1,11 @@
-# Iskra language
+# Iskra language playground
 
-## Run
+Link goes here.
+
+## Repository
+
+- `src`: Iskra compiler source
+- `site`: Iskra playground website source
 
 ## Grammar
 
