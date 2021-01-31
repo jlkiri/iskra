@@ -1,7 +1,7 @@
 {
   "name": "iskra",
   "description": "Iskra language",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -10,15 +10,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jlkiri/spark.git"
+    "url": "git+https://github.com/jlkiri/iskra.git"
   },
   "keywords": [],
   "author": "jlkiri",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jlkiri/spark/issues"
+    "url": "https://github.com/jlkiri/iskra/issues"
   },
-  "homepage": "https://github.com/jlkiri/spark#readme",
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/jlkiri/iskra#readme",
   "devDependencies": {
     "@types/node": "^14.14.20",
     "@types/prettier": "^2.1.6",
