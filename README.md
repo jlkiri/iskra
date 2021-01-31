@@ -1,5 +1,7 @@
 # Iskra language playground
 
+Iskra is pronounced /i'skrʌ/ and means "spark" in Russian.
+
 https://iskra-playground.vercel.app/
 
 ## Repository

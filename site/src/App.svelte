@@ -111,7 +111,11 @@
   })
 </script>
 
-<svelte:head><title>Iskra language playground</title></svelte:head>
+<svelte:head
+  ><title>Iskra language playground</title><script
+    async
+    src="https://cdn.splitbee.io/sb.js"></script></svelte:head
+>
 
 <div class="container">
   <div class="canvas-wrapper">
