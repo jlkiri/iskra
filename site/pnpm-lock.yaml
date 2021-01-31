@@ -1,5 +1,5 @@
 dependencies:
-  iskra: 'link:..'
+  iskra: 1.0.1
   sirv-cli: 1.0.10
 devDependencies:
   '@rollup/plugin-commonjs': 16.0.0_rollup@2.36.1
@@ -465,6 +465,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==
+  /iskra/1.0.1:
+    dev: false
+    resolution:
+      integrity: sha512-2ZggxyJyOdtf12KnK8S95O/CvfXaVEdVKW3AHb1i5AhWsSDi2rA7nZH/Kb4DT3CPaWTOxcEAyX6eD2l4yeOI9Q==
   /jest-worker/26.6.2:
     dependencies:
       '@types/node': 14.14.20
@@ -904,7 +908,7 @@ specifiers:
   '@rollup/plugin-node-resolve': ^10.0.0
   '@rollup/plugin-typescript': ^6.0.0
   '@tsconfig/svelte': ^1.0.0
-  iskra: 'file:../'
+  iskra: ~1.0.1
   rollup: ^2.3.4
   rollup-plugin-css-only: ^3.1.0
   rollup-plugin-livereload: ^2.0.0

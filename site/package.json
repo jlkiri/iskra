@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "sirv-cli": "^1.0.0",
-    "iskra": "file:../"
+    "iskra": "~1.0.1"
   }
 }
