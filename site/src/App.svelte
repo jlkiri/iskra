@@ -24,13 +24,7 @@
     fn: (ctx: CanvasRenderingContext2D, drawLine: Function) => void
   ) => void
 
-  // $: resizerOffset = window.innerWidth - $consoleWidth
-
-  let resizerDx = 0
-
-  onMount(() => {
-    //resizerOffset = canvas.width
-  })
+  let dragDx = 0
 
   const menuFlyIn = {
     duration: 200,
@@ -60,14 +54,13 @@
   }
 
   function handlePanMove(event) {
-    resizerDx += event.detail.dx
+    dragDx += event.detail.dx
   }
 
   function handlePanEnd(event) {
-    resizerDx += event.detail.dx
-    $consoleWidth =
-      resizerDx > 0 ? $consoleWidth - resizerDx : $consoleWidth - resizerDx
-    resizerDx = 0
+    dragDx += event.detail.dx
+    $consoleWidth = dragDx > 0 ? $consoleWidth - dragDx : $consoleWidth - dragDx
+    dragDx = 0
     requestAnimationFrame(() => resetCanvas())
   }
 
@@ -118,6 +111,8 @@
   })
 </script>
 
+<svelte:head><title>Iskra language playground</title></svelte:head>
+
 <div class="container">
   <div class="canvas-wrapper">
     <div class="settings">
@@ -157,7 +152,7 @@
     use:pannable
     on:panmove={handlePanMove}
     on:panend={handlePanEnd}
-    style="--offset: {$consoleWidth + 18}px; --dx: {resizerDx}px"
+    style="--offset: {$consoleWidth + 18}px; --dx: {dragDx}px"
   />
 </div>
 

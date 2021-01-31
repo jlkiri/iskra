@@ -38,8 +38,6 @@ export function pannable(node) {
     x = event.clientX
     y = event.clientY
 
-    console.log(x, y)
-
     node.dispatchEvent(
       new CustomEvent("panmove", {
         detail: { x, y, dx, dy },

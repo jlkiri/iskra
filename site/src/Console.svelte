@@ -14,7 +14,7 @@
 
   const dispatch = createEventDispatcher()
 
-  function handleConsoleInput(event) {
+  function handleConsoleInput(event: KeyboardEvent) {
     if ($state == "idle" || $state == "rejected") {
       if (event.key == "Enter") {
         dispatch("command", { command })
