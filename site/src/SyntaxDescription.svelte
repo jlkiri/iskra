@@ -1,12 +1,13 @@
 <script>
   import CameraSvg from "./svg/CameraSVG.svelte"
+  import GithubSvg from "./svg/GithubSVG.svelte"
 </script>
 
-<div class="help">
+<aside class="help">
   <div class="command-description">
     <span>forward &lt;number&gt;</span>: Draws a line of length &lt;number&gt;.
-    Direction depends on current angle of rotation (see <span>turn</span>).
-    Example: forward 200
+    Direction depends on current angle of rotation (see
+    <span>turn</span>). Example: forward 200
   </div>
   <div class="command-description">
     <span>turn &lt;number&gt;</span>: Turns clockwise by &lt;number&gt; degrees.
@@ -32,11 +33,28 @@
       </ul>
     </div>
   </div>
-</div>
+  <div class="link">
+    <GithubSvg /><a href="https://github.com/jlkiri/iskra"> Iskra on Github</a>
+  </div>
+</aside>
 
 <style>
   ul {
     padding: 0 1.5em;
+  }
+
+  .link a {
+    color: inherit;
+    margin-left: 0.5em;
+  }
+
+  .help .link {
+    position: absolute;
+    bottom: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
   }
 
   .help {
